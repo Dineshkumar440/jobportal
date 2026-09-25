@@ -1,0 +1,255 @@
+.student-dashboard {
+  width: 100%;
+  max-width: 1200px;
+  min-height: calc(100vh - 72px);
+  margin: 0 auto;
+  padding: 45px 24px 70px;
+}
+
+/* Loading */
+
+.dashboard-loading {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+/* Header */
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  color: var(--text-dark);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.dashboard-header p {
+  margin-top: 7px;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+/* Summary */
+
+.application-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.summary-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.summary-card h3 {
+  color: var(--text-light);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.summary-card p {
+  color: var(--text-dark);
+  font-size: 30px;
+  font-weight: 800;
+}
+
+/* Applications section */
+
+.applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.applications-list::before {
+  content: "Recent Applications";
+  display: block;
+  color: var(--text-dark);
+  font-size: 23px;
+  font-weight: 750;
+  margin-bottom: 4px;
+}
+
+.application-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  box-shadow: var(--shadow-sm);
+  transition: 0.2s ease;
+}
+
+.application-card:hover {
+  border-color: #c7d2fe;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Application information */
+
+.application-info {
+  flex: 1;
+}
+
+.application-info h3 {
+  color: var(--text-dark);
+  font-size: 19px;
+  font-weight: 750;
+  margin-bottom: 10px;
+}
+
+.application-info p {
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.application-info .location {
+  color: var(--text-light);
+}
+
+.application-info .applied-date {
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+/* Status */
+
+.application-status {
+  min-width: 100px;
+  text-align: center;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: capitalize;
+}
+
+.status.accepted {
+  color: #166534;
+  background: var(--success-bg);
+}
+
+.status.rejected {
+  color: #991b1b;
+  background: var(--danger-bg);
+}
+
+.status.pending {
+  color: #92400e;
+  background: var(--warning-bg);
+}
+
+/* Empty state */
+
+.empty-applications {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 60px 25px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-applications h3 {
+  color: var(--text-dark);
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.empty-applications p {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .application-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .application-card {
+    align-items: flex-start;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .student-dashboard {
+    padding: 30px 16px 50px;
+  }
+
+  .dashboard-header {
+    margin-bottom: 25px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 27px;
+  }
+
+  .application-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+
+  .summary-card {
+    padding: 18px;
+  }
+
+  .summary-card p {
+    font-size: 25px;
+  }
+
+  .application-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .application-status {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .application-summary {
+    grid-template-columns: 1fr;
+  }
+}

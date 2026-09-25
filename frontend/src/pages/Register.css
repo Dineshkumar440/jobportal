@@ -1,0 +1,154 @@
+.auth-page {
+  min-height: calc(100vh - 72px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 50px 20px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(79, 70, 229, 0.12),
+      transparent 35%
+    ),
+    var(--background);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+
+  background: white;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  padding: 38px;
+
+  box-shadow: var(--shadow-md);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-header h1 {
+  color: var(--text-dark);
+
+  font-size: 30px;
+  font-weight: 800;
+
+  margin-bottom: 8px;
+}
+
+.auth-header p {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.auth-form label {
+  color: var(--text-dark);
+
+  font-size: 14px;
+  font-weight: 650;
+
+  margin-top: 8px;
+}
+
+.auth-form input,
+.auth-form select {
+  width: 100%;
+  height: 46px;
+
+  padding: 0 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  outline: none;
+
+  background: white;
+
+  color: var(--text-dark);
+
+  transition: 0.2s ease;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+  border-color: var(--primary);
+
+  box-shadow:
+    0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.auth-form button[type="submit"] {
+  height: 48px;
+
+  margin-top: 15px;
+
+  border: none;
+  border-radius: 9px;
+
+  color: white;
+  background: var(--primary);
+
+  font-weight: 700;
+
+  transition: 0.2s ease;
+}
+
+.auth-form button[type="submit"]:hover {
+  background: var(--primary-dark);
+}
+
+.auth-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-footer {
+  margin-top: 25px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid var(--border);
+
+  text-align: center;
+}
+
+.auth-footer p {
+  display: inline;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.register-link {
+  border: none;
+  background: transparent;
+
+  color: var(--primary);
+
+  font-weight: 700;
+
+  margin-left: 5px;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+  .auth-card {
+    padding: 28px 20px;
+  }
+}

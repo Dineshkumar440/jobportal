@@ -1,0 +1,291 @@
+.applicants-page {
+  width: 100%;
+  max-width: 1200px;
+  min-height: calc(100vh - 72px);
+  margin: 0 auto;
+  padding: 45px 24px 70px;
+}
+
+/* Loading */
+
+.applicants-loading {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+/* Header */
+
+.applicants-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.applicants-header h1 {
+  margin: 0;
+  color: var(--text-dark);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.applicants-header p {
+  margin-top: 7px;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.applicant-total {
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+/* Empty */
+
+.no-applicants {
+  padding: 65px 25px;
+  text-align: center;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.no-applicants h3 {
+  margin-bottom: 8px;
+  color: var(--text-dark);
+  font-size: 20px;
+}
+
+/* Applicants List */
+
+.applicants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Applicant Card */
+
+.applicant-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 25px;
+  box-shadow: var(--shadow-sm);
+  transition: 0.2s ease;
+}
+
+.applicant-card:hover {
+  border-color: #c7d2fe;
+  box-shadow: var(--shadow-md);
+}
+
+/* Top */
+
+.applicant-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.applicant-top h2,
+.applicant-top h3 {
+  margin: 0;
+  color: var(--text-dark);
+  font-size: 20px;
+  font-weight: 750;
+}
+
+.applicant-top p {
+  margin-top: 6px;
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+/* Status */
+
+.applicant-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: capitalize;
+}
+
+.applicant-status.accepted {
+  color: #166534;
+  background: var(--success-bg);
+}
+
+.applicant-status.rejected {
+  color: #991b1b;
+  background: var(--danger-bg);
+}
+
+.applicant-status.pending {
+  color: #92400e;
+  background: var(--warning-bg);
+}
+
+/* Details */
+
+.applicant-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  padding: 22px 0;
+}
+
+.detail-section {
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 10px;
+}
+
+.detail-section h4 {
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 7px;
+}
+
+.detail-section p {
+  color: var(--text-dark);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Actions */
+
+.applicant-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding-top: 18px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.applicant-actions button,
+.applicant-actions a {
+  min-height: 39px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* Resume */
+
+.resume-btn {
+  color: var(--text-dark);
+  background: #f1f5f9;
+}
+
+.resume-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Accept */
+
+.accept-btn {
+  color: #166534;
+  background: var(--success-bg);
+}
+
+.accept-btn:hover {
+  background: #bbf7d0;
+}
+
+/* Reject */
+
+.reject-btn {
+  color: #991b1b;
+  background: var(--danger-bg);
+}
+
+.reject-btn:hover {
+  background: #fecaca;
+}
+
+/* Tablet */
+
+@media (max-width: 800px) {
+  .applicant-details {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .applicants-page {
+    padding: 30px 16px 50px;
+  }
+
+  .applicants-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .applicants-header h1 {
+    font-size: 27px;
+  }
+
+  .applicant-total {
+    align-self: flex-start;
+  }
+
+  .applicant-card {
+    padding: 20px;
+  }
+
+  .applicant-top {
+    flex-direction: column;
+  }
+
+  .applicant-details {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .applicant-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .applicant-actions button,
+  .applicant-actions a {
+    width: 100%;
+  }
+}
