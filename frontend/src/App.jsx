@@ -8,7 +8,7 @@ import Jobs from "./pages/Jobs";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
-import Profile from "./pages/profile";
+import Profile from "./pages/Profile";
 import CompanyDashboard from "./pages/CompanyDashboard";
 import CreateJob from "./pages/CreateJob";
 import Applicants from "./pages/Applicants";
