@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import JobDetails from "./pages/JobDetails"
 import Jobs from "./pages/Jobs";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -37,6 +38,8 @@ const App = () => {
           path="/register"
           element={<Register />}
         />
+
+        <Route path="/job/:id" element={<JobDetails />} />
 
         {/* Student Pages */}
         <Route

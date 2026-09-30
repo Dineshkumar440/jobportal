@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "./Jobs.css";
 
 const Jobs = () => {
+  const navigate = useNavigate();
+
   const [jobs, setJobs] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -16,24 +19,6 @@ const Jobs = () => {
       setJobs(response.data);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const handleApply = async (jobId) => {
-    try {
-      await api.post("applications/apply/", {
-        job_id: jobId,
-      });
-
-      alert("Application Submitted Successfully");
-
-    } catch (error) {
-      console.log("Error:", error.response?.data);
-
-      alert(
-        error.response?.data?.error ||
-        "Application Failed"
-      );
     }
   };
 
@@ -88,22 +73,22 @@ const Jobs = () => {
                   📍 {job.location}
                 </p>
 
-                <p className="job-description">
-                  {job.description}
+                <p className="job-salary">
+                  ₹{job.salary}
                 </p>
 
                 <div className="job-bottom">
 
                   <span>
-                    ₹{job.salary}
+                    View full job details
                   </span>
 
                   <button
                     onClick={() =>
-                      handleApply(job.id)
+                      navigate(`/job/${job.id}`)
                     }
                   >
-                    Apply
+                    View Details
                   </button>
 
                 </div>

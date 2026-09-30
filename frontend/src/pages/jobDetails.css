@@ -1,0 +1,181 @@
+.job-details-page {
+  min-height: calc(100vh - 65px);
+  background: #f5f7fb;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 50px 20px;
+
+  box-sizing: border-box;
+}
+
+.job-details-card {
+  width: 100%;
+  max-width: 850px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  padding: 40px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+  box-sizing: border-box;
+}
+
+.job-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 20px;
+
+  padding-bottom: 25px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.job-details-header h1 {
+  margin: 0 0 12px;
+
+  font-size: 30px;
+}
+
+.details-location {
+  margin: 0;
+
+  color: #666;
+
+  font-size: 15px;
+}
+
+.details-salary {
+  font-size: 22px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.job-details-section {
+  padding: 30px 0;
+}
+
+.job-details-section h2 {
+  margin: 0 0 15px;
+
+  font-size: 21px;
+}
+
+.full-description {
+  margin: 0;
+
+  color: #444;
+
+  line-height: 1.8;
+
+  white-space: pre-line;
+
+  font-size: 16px;
+}
+
+.job-details-actions {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+.job-details-actions button {
+  padding: 12px 22px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.back-btn {
+  background: #f3f4f6;
+}
+
+.apply-btn {
+  background: #111827;
+
+  color: #ffffff;
+}
+
+.apply-btn:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+.job-details-loading {
+  text-align: center;
+
+  padding: 80px;
+
+  font-size: 20px;
+}
+
+.job-details-error {
+  text-align: center;
+
+  padding: 80px;
+}
+
+.job-details-error button {
+  margin-top: 20px;
+
+  padding: 10px 20px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+
+  .job-details-page {
+    padding: 30px 15px;
+  }
+
+  .job-details-card {
+    padding: 25px 20px;
+  }
+
+  .job-details-header {
+    flex-direction: column;
+  }
+
+  .job-details-header h1 {
+    font-size: 25px;
+  }
+
+  .job-details-actions {
+    flex-direction: column-reverse;
+  }
+
+  .job-details-actions button {
+    width: 100%;
+  }
+}
