@@ -6,7 +6,8 @@ from .views import (
     StudentProfileViewSet,
     CompanyProfileViewSet,
     StudentProfileView,
-    AdminDashboardView
+    AdminDashboardView,
+    DeleteAccountView
 )
 
 router = DefaultRouter()
@@ -41,6 +42,13 @@ urlpatterns = [
         name='admin-dashboard'
     ),
 
+    path(
+        'delete-account/',
+        DeleteAccountView.as_view(),
+        name='delete-account'
+    ),
+
 ]
 
 urlpatterns += router.urls
+

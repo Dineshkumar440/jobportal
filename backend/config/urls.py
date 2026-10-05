@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from accounts.views import MyTokenObtainPairView
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -14,10 +15,10 @@ urlpatterns = [
     path('api/accounts/', include('accounts.urls')),
 
     path(
-        'api/login/',
-        TokenObtainPairView.as_view(),
-        name='token_obtain_pair'
-    ),
+    'api/login/',
+    MyTokenObtainPairView.as_view(),
+    name='token_obtain_pair'
+),
 
     path(
         'api/refresh/',

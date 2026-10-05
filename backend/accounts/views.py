@@ -4,21 +4,19 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from jobs.models import Job
-from applications.models import Application
-from .models import User
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import StudentProfile, CompanyProfile
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .models import User, StudentProfile, CompanyProfile
+
 from .serializers import (
     RegisterSerializer,
     StudentProfileSerializer,
     CompanyProfileSerializer,
+    MyTokenObtainPairSerializer,
 )
 
-from applications.models import Application
 from jobs.models import Job
+from applications.models import Application
 
 
 class RegisterView(CreateAPIView):
@@ -66,12 +64,15 @@ class CompanyProfileViewSet(viewsets.ModelViewSet):
 
         profile = self.get_object()
 
-        jobs = Job.objects.filter(company=profile.user)
+        jobs = Job.objects.filter(
+            company=profile.user
+        )
 
         total_applicants = 0
         job_list = []
 
         for job in jobs:
+
             applicant_count = Application.objects.filter(
                 job=job
             ).count()
@@ -107,14 +108,22 @@ class AdminDashboardView(APIView):
             )
 
         return Response({
-            "students": User.objects.filter(role="student").count(),
-            "companies": User.objects.filter(role="company").count(),
+            "students": User.objects.filter(
+                role="student"
+            ).count(),
+
+            "companies": User.objects.filter(
+                role="company"
+            ).count(),
+
             "jobs": Job.objects.count(),
+
             "applications": Application.objects.count()
         })
 
 
 class StudentProfileView(APIView):
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -123,9 +132,13 @@ class StudentProfileView(APIView):
             user=request.user
         )
 
-        serializer = StudentProfileSerializer(profile)
+        serializer = StudentProfileSerializer(
+            profile
+        )
 
-        return Response(serializer.data)
+        return Response(
+            serializer.data
+        )
 
     def put(self, request):
 
@@ -140,10 +153,56 @@ class StudentProfileView(APIView):
         )
 
         if serializer.is_valid():
+
             serializer.save()
-            return Response(serializer.data)
+
+            return Response(
+                serializer.data
+            )
 
         return Response(
             serializer.errors,
             status=400
         )
+
+
+class DeleteAccountView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+
+        password = request.data.get("password")
+
+        if not password:
+
+            return Response(
+                {
+                    "error": "Password is required"
+                },
+                status=400
+            )
+
+        if not request.user.check_password(password):
+
+            return Response(
+                {
+                    "error": "Incorrect password"
+                },
+                status=400
+            )
+
+        request.user.delete()
+
+        return Response(
+            {
+                "message": "Account deleted successfully"
+            },
+            status=200
+        )
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+
+    serializer_class = MyTokenObtainPairSerializer
+

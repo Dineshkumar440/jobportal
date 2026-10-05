@@ -29,13 +29,24 @@ const Navbar = () => {
 
         <div className="navbar-links">
 
-          <Link to="/" className="nav-link">
+          {/* Jobs */}
+
+          <Link
+            to="/"
+            className="nav-link"
+          >
             Jobs
           </Link>
 
+
+          {/* Logged Out */}
+
           {!access && (
             <>
-              <Link to="/login" className="nav-link">
+              <Link
+                to="/login"
+                className="nav-link"
+              >
                 Login
               </Link>
 
@@ -47,6 +58,9 @@ const Navbar = () => {
               </Link>
             </>
           )}
+
+
+          {/* Student */}
 
           {access && role === "student" && (
             <>
@@ -63,8 +77,25 @@ const Navbar = () => {
               >
                 Profile
               </Link>
+
+              <Link
+                to="/settings"
+                className="nav-link"
+              >
+                Settings
+              </Link>
+
+              <Link
+                to="/about"
+                className="nav-link"
+              >
+                About
+              </Link>
             </>
           )}
+
+
+          {/* Company */}
 
           {access && role === "company" && (
             <>
@@ -81,17 +112,53 @@ const Navbar = () => {
               >
                 Post Job
               </Link>
+
+              <Link
+                to="/settings"
+                className="nav-link"
+              >
+                Settings
+              </Link>
+
+              <Link
+                to="/about"
+                className="nav-link"
+              >
+                About
+              </Link>
             </>
           )}
 
+
+          {/* Admin */}
+
           {access && role === "admin" && (
-            <Link
-              to="/admin-dashboard"
-              className="nav-link"
-            >
-              Admin Dashboard
-            </Link>
+            <>
+              <Link
+                to="/admin-dashboard"
+                className="nav-link"
+              >
+                Admin Dashboard
+              </Link>
+
+              <Link
+                to="/settings"
+                className="nav-link"
+              >
+                Settings
+              </Link>
+
+              <Link
+                to="/about"
+                className="nav-link"
+              >
+                About
+              </Link>
+            </>
           )}
+
+
+          {/* Logout */}
 
           {access && (
             <button
@@ -111,3 +178,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

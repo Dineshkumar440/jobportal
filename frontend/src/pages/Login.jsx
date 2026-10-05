@@ -26,6 +26,7 @@ const Login = () => {
         password,
       });
 
+      // Save JWT tokens
       localStorage.setItem(
         "access",
         response.data.access
@@ -36,20 +37,14 @@ const Login = () => {
         response.data.refresh
       );
 
-      let role = "";
-
-      if (username === "TechCorp") {
-        role = "company";
-      } else if (username === "Admin") {
-        role = "admin";
-      } else {
-        role = "student";
-      }
+      // Get actual role from backend
+      const role = response.data.role;
 
       localStorage.setItem("role", role);
 
       alert("Login Successful");
 
+      // Navigate based on actual user role
       if (role === "company") {
         navigate("/company-dashboard");
       } else if (role === "admin") {
@@ -73,7 +68,6 @@ const Login = () => {
 
   return (
     <div className="auth-page">
-
       <div className="auth-card">
 
         <div className="auth-header">
@@ -115,7 +109,9 @@ const Login = () => {
             type="submit"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading
+              ? "Logging in..."
+              : "Login"}
           </button>
 
         </form>
@@ -137,7 +133,6 @@ const Login = () => {
         </div>
 
       </div>
-
     </div>
   );
 };
