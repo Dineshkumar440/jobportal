@@ -59,7 +59,10 @@ class MyTokenObtainPairSerializer(
 
         token = super().get_token(user)
 
-        token["role"] = user.role
+        if user.is_superuser:
+            token["role"] = "admin"
+        else:
+            token["role"] = user.role
 
         return token
 
@@ -67,6 +70,9 @@ class MyTokenObtainPairSerializer(
 
         data = super().validate(attrs)
 
-        data["role"] = self.user.role
+        if self.user.is_superuser:
+            data["role"] = "admin"
+        else:
+            data["role"] = self.user.role
 
         return data
