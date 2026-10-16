@@ -27,6 +27,7 @@ const Profile = () => {
     navigate("/login");
   };
 
+  // Fetch student profile
   const fetchProfile = async () => {
     setLoading(true);
     setError("");
@@ -41,7 +42,7 @@ const Profile = () => {
         skills: response.data.skills || "",
       });
     } catch (err) {
-      console.error("Profile update failed:", {
+      console.error("Profile fetch error:", {
         status: err.response?.status,
         data: err.response?.data,
         message: err.message,
@@ -55,7 +56,7 @@ const Profile = () => {
       if (err.response?.status === 500) {
         setError(
           t("profileServerError") ||
-          "Server error while updating your profile. Please try again later."
+            "Server error while loading your profile. Please try again later."
         );
       } else {
         const detail = err.response?.data?.detail;
@@ -67,16 +68,18 @@ const Profile = () => {
         );
       }
     } finally {
+      // IMPORTANT: Stop loading after the request finishes
+      setLoading(false);
       setSaving(false);
     }
   };
 
   useEffect(() => {
     fetchProfile();
-    // Load the profile when this page mounts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -89,6 +92,7 @@ const Profile = () => {
     setMessage("");
   };
 
+  // Update student profile
   const updateProfile = async (e) => {
     e.preventDefault();
 
@@ -112,7 +116,11 @@ const Profile = () => {
 
       setMessage(t("profileUpdateSuccess"));
     } catch (err) {
-      console.error("Profile update error:", err.response?.data);
+      console.error("Profile update error:", {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message,
+      });
 
       if (err.response?.status === 401) {
         clearSession();
@@ -120,6 +128,7 @@ const Profile = () => {
       }
 
       const detail = err.response?.data?.detail;
+
       setError(
         typeof detail === "string"
           ? detail
@@ -130,6 +139,7 @@ const Profile = () => {
     }
   };
 
+  // Show loading screen while fetching profile
   if (loading) {
     return (
       <main className="profile-page">
@@ -177,7 +187,10 @@ const Profile = () => {
               </div>
             </div>
 
-            <form className="profile-form" onSubmit={updateProfile}>
+            <form
+              className="profile-form"
+              onSubmit={updateProfile}
+            >
               <div className="profile-field">
                 <label htmlFor="profile-phone">
                   {t("profilePhone")}
