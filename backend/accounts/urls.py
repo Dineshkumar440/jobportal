@@ -7,7 +7,9 @@ from .views import (
     CompanyProfileViewSet,
     StudentProfileView,
     AdminDashboardView,
-    DeleteAccountView
+    DeleteAccountView,
+    password_reset_request,
+    password_reset_confirm
 )
 
 router = DefaultRouter()
@@ -47,6 +49,19 @@ urlpatterns = [
         DeleteAccountView.as_view(),
         name='delete-account'
     ),
+    
+    
+    path(
+        "password-reset/",
+        password_reset_request,
+        name="password-reset",
+    ),
+    path(
+        "password-reset-confirm/",
+        password_reset_confirm,
+        name="password-reset-confirm",
+    ),
+
 
 ]
 

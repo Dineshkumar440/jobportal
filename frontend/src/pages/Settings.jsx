@@ -1,14 +1,119 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { useLanguage } from "../context/LanguageContext";
 import "./Settings.css";
 
 const Settings = () => {
   const navigate = useNavigate();
 
+  const access = localStorage.getItem("access");
+  const role = localStorage.getItem("role");
+
+  const { language, setLanguage, t } = useLanguage();
+
+  const [activeSection, setActiveSection] = useState("appearance");
+
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "light"
+  );
+
+  const [fontSize, setFontSize] = useState(
+    () => localStorage.getItem("fontSize") || "medium"
+  );
+
+  const [notifications, setNotifications] = useState(
+    () => localStorage.getItem("notifications") !== "false"
+  );
+
   const [showDelete, setShowDelete] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  /* ================= THEME ================= */
+
+  const applyTheme = (selectedTheme) => {
+    const actualTheme =
+      selectedTheme === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : selectedTheme;
+
+    document.documentElement.setAttribute("data-theme", actualTheme);
+  };
+
+  useEffect(() => {
+    applyTheme(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  /* ================= SYSTEM THEME ================= */
+
+  useEffect(() => {
+    if (theme !== "system") return;
+
+    const mediaQuery = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    );
+
+    const handleThemeChange = () => applyTheme("system");
+
+    mediaQuery.addEventListener("change", handleThemeChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleThemeChange);
+    };
+  }, [theme]);
+
+  /* ================= FONT SIZE ================= */
+
+  useEffect(() => {
+    const validSizes = ["small", "medium", "large"];
+    const selectedSize = validSizes.includes(fontSize)
+      ? fontSize
+      : "medium";
+
+    document.documentElement.setAttribute(
+      "data-font-size",
+      selectedSize
+    );
+
+    localStorage.setItem("fontSize", selectedSize);
+
+    // Existing zoom behaviour retained.
+    const scaleMap = {
+      small: "0.9",
+      medium: "1",
+      large: "1.15",
+    };
+
+    document.documentElement.style.zoom = scaleMap[selectedSize];
+  }, [fontSize]);
+
+  /* ================= NOTIFICATIONS ================= */
+
+  const handleNotificationChange = (value) => {
+    setNotifications(value);
+    localStorage.setItem("notifications", String(value));
+  };
+
+  /* ================= RESET DEFAULTS ================= */
+
+  const resetPreferences = () => {
+    setTheme("light");
+    setFontSize("medium");
+    setLanguage("english");
+    setNotifications(true);
+
+    localStorage.setItem("theme", "light");
+    localStorage.setItem("fontSize", "medium");
+    localStorage.setItem("language", "english");
+    localStorage.setItem("notifications", "true");
+  };
+
+  /* ================= LOGOUT ================= */
 
   const handleLogout = () => {
     localStorage.removeItem("access");
@@ -18,226 +123,486 @@ const Settings = () => {
     navigate("/login");
   };
 
+  /* ================= DELETE ACCOUNT ================= */
+
   const handleDeleteAccount = async () => {
-    if (!password) {
-      alert("Please enter your password");
+    if (!password.trim()) {
+      alert(t("enterPassword"));
       return;
     }
 
-    const confirmDelete = window.confirm(
-      "Are you sure you want to permanently delete your account?"
-    );
+    const confirmDelete = window.confirm(t("confirmDelete"));
 
-    if (!confirmDelete) {
-      return;
-    }
+    if (!confirmDelete) return;
 
     try {
       setLoading(true);
 
-      await api.delete(
-        "accounts/delete-account/",
-        {
-          data: {
-            password: password,
-          },
-        }
-      );
+      await api.delete("accounts/delete-account/", {
+        data: { password },
+      });
 
-      alert(
-        "Your account has been deleted successfully."
-      );
+      alert(t("accountDeleted"));
 
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
       localStorage.removeItem("role");
 
       navigate("/login");
-
     } catch (error) {
-      console.log(
-        "Delete Account Error:",
-        error.response?.data
-      );
+      console.error("Delete Account Error:", error.response?.data);
 
       alert(
-        error.response?.data?.error ||
-        "Unable to delete account"
+        error.response?.data?.error || t("deleteFailed")
       );
-
     } finally {
       setLoading(false);
     }
   };
 
+  /* ================= SIDEBAR BUTTON ================= */
+
+  const renderNavButton = (section, icon, label) => (
+    <button
+      key={section}
+      type="button"
+      className={`settings-nav ${
+        activeSection === section ? "active" : ""
+      }`}
+      onClick={() => setActiveSection(section)}
+    >
+      <span className="settings-nav-icon">{icon}</span>
+      <span className="settings-nav-label">{label}</span>
+    </button>
+  );
+
   return (
     <div className="settings-page">
-
       <div className="settings-container">
 
+        {/* HEADER */}
+
         <div className="settings-header">
-          <h1>Settings</h1>
+          <div>
+            <span className="settings-label">
+              {t("preferences")}
+            </span>
 
-          <p>
-            Manage your JobPortal account
-          </p>
+            <h1>{t("settings")}</h1>
+
+            <p>{t("managePreferences")}</p>
+          </div>
+
+          <button
+            type="button"
+            className="reset-settings-button"
+            onClick={resetPreferences}
+          >
+            {t("resetDefaults")}
+          </button>
         </div>
 
-        <div className="settings-card">
+        {/* SETTINGS LAYOUT */}
 
-          {/* Account Section */}
+        <div className="settings-layout">
 
-          <div className="settings-section">
+          {/* SIDEBAR */}
 
-            <h2>Account</h2>
+          <aside className="settings-sidebar">
+            {renderNavButton("appearance", "🎨", t("appearance"))}
+            {renderNavButton("language", "🌐", t("language"))}
+            {renderNavButton("notifications", "🔔", t("notifications"))}
+            {renderNavButton("account", "👤", t("account"))}
 
-            <div className="settings-item">
+            {access &&
+              renderNavButton("security", "🔐", t("security"))}
+          </aside>
 
-              <div>
-                <h3>Profile</h3>
+          {/* CONTENT */}
 
-                <p>
-                  View and update your profile
-                  information.
-                </p>
-              </div>
+          <main className="settings-content">
 
-              <button
-                onClick={() => navigate("/profile")}
-              >
-                View Profile
-              </button>
+            {/* APPEARANCE */}
 
-            </div>
+            {activeSection === "appearance" && (
+              <section className="settings-panel">
+                <div className="panel-heading">
+                  <h2>{t("appearance")}</h2>
+                  <p>{t("customizeAppearance")}</p>
+                </div>
 
-          </div>
+                <div className="preference-group">
+                  <h3>{t("theme")}</h3>
+                  <p className="preference-description">
+                    {t("chooseTheme")}
+                  </p>
 
+                  <div className="theme-options">
+                    {[
+                      {
+                        value: "light",
+                        icon: "☀️",
+                        label: t("light"),
+                        description: t("lightDescription"),
+                      },
+                      {
+                        value: "dark",
+                        icon: "🌙",
+                        label: t("dark"),
+                        description: t("darkDescription"),
+                      },
+                      {
+                        value: "system",
+                        icon: "🖥️",
+                        label: t("system"),
+                        description: t("systemDescription"),
+                      },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={`theme-option ${
+                          theme === option.value ? "selected" : ""
+                        }`}
+                        onClick={() => setTheme(option.value)}
+                      >
+                        <span className="theme-icon">
+                          {option.icon}
+                        </span>
+                        <strong>{option.label}</strong>
+                        <small>{option.description}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-          {/* Session Section */}
+                <div className="preference-group">
+                  <h3>{t("fontSize")}</h3>
 
-          <div className="settings-section">
+                  <p className="preference-description">
+                    {t("changeFontSize")}
+                  </p>
 
-            <h2>Session</h2>
+                  <div className="font-options">
+                    {[
+                      {
+                        value: "small",
+                        label: t("small"),
+                        description: "90%",
+                      },
+                      {
+                        value: "medium",
+                        label: t("medium"),
+                        description: t("defaultSize"),
+                      },
+                      {
+                        value: "large",
+                        label: t("large"),
+                        description: "115%",
+                      },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={`font-option ${
+                          fontSize === option.value ? "selected" : ""
+                        }`}
+                        onClick={() => setFontSize(option.value)}
+                      >
+                        <span className={`font-preview ${option.value}`}>
+                          A
+                        </span>
 
-            <div className="settings-item">
+                        <div>
+                          <strong>{option.label}</strong>
+                          <small>{option.description}</small>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
 
-              <div>
-                <h3>Logout</h3>
+            {/* LANGUAGE */}
 
-                <p>
-                  Logout from your JobPortal account.
-                </p>
-              </div>
+            {activeSection === "language" && (
+              <section className="settings-panel">
+                <div className="panel-heading">
+                  <h2>{t("languagePreference")}</h2>
+                  <p>{t("chooseLanguage")}</p>
+                </div>
 
-              <button
-                className="logout-button"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
+                <div className="language-list">
+                  {[
+                    {
+                      value: "english",
+                      icon: "🇬🇧",
+                      label: "English",
+                      description: t("english"),
+                    },
+                    {
+                      value: "tamil",
+                      icon: "🇮🇳",
+                      label: "தமிழ்",
+                      description: t("tamil"),
+                    },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={`language-option ${
+                        language === option.value ? "selected" : ""
+                      }`}
+                      onClick={() => setLanguage(option.value)}
+                    >
+                      <div className="language-left">
+                        <span className="language-icon">
+                          {option.icon}
+                        </span>
 
-            </div>
+                        <div>
+                          <strong>{option.label}</strong>
+                          <small>{option.description}</small>
+                        </div>
+                      </div>
 
-          </div>
+                      {language === option.value && (
+                        <span className="selected-check">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
 
+                <div className="language-note">
+                  <span>ℹ️</span>
+                  <p>{t("languageSaved")}</p>
+                </div>
+              </section>
+            )}
 
-          {/* Danger Zone */}
+            {/* NOTIFICATIONS */}
 
-          <div className="settings-section danger-section">
+            {activeSection === "notifications" && (
+              <section className="settings-panel">
+                <div className="panel-heading">
+                  <h2>{t("notifications")}</h2>
+                  <p>{t("notificationDescription")}</p>
+                </div>
 
-            <h2>Danger Zone</h2>
+                <div className="setting-row">
+                  <div>
+                    <h3>{t("applicationNotifications")}</h3>
+                    <p>{t("applicationNotificationsDescription")}</p>
+                  </div>
 
-            <div className="settings-item">
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={notifications}
+                      onChange={(event) =>
+                        handleNotificationChange(event.target.checked)
+                      }
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+              </section>
+            )}
 
-              <div>
-                <h3>Delete Account</h3>
+            {/* ACCOUNT */}
 
-                <p>
-                  Permanently delete your JobPortal
-                  account. This action cannot be undone.
-                </p>
-              </div>
+            {activeSection === "account" && (
+              <section className="settings-panel">
+                <div className="panel-heading">
+                  <h2>{t("account")}</h2>
+                  <p>{t("manageAccount")}</p>
+                </div>
 
-              <button
-                className="delete-button"
-                onClick={() => {
-                  setShowDelete(true);
-                  setPassword("");
-                }}
-              >
-                Delete Account
-              </button>
+                {!access && (
+                  <div className="guest-account">
+                    <div className="guest-icon">👋</div>
+                    <h3>{t("guest")}</h3>
+                    <p>{t("guestDescription")}</p>
 
-            </div>
+                    <div className="guest-actions">
+                      <button
+                        type="button"
+                        onClick={() => navigate("/login")}
+                      >
+                        {t("login")}
+                      </button>
 
-          </div>
+                      <button
+                        type="button"
+                        className="secondary"
+                        onClick={() => navigate("/register")}
+                      >
+                        {t("createAccount")}
+                      </button>
+                    </div>
+                  </div>
+                )}
 
+                {access && role === "student" && (
+                  <div className="account-card">
+                    <div className="account-icon">👨‍🎓</div>
+
+                    <div className="account-info">
+                      <span>{t("studentAccount")}</span>
+                      <h3>{t("studentProfile")}</h3>
+                      <p>{t("studentProfileDescription")}</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => navigate("/profile")}
+                    >
+                      {t("viewProfile")} →
+                    </button>
+                  </div>
+                )}
+
+                {access && role === "company" && (
+                  <div className="account-card">
+                    <div className="account-icon">🏢</div>
+
+                    <div className="account-info">
+                      <span>{t("companyAccount")}</span>
+                      <h3>{t("companyDashboard")}</h3>
+                      <p>{t("companyDescription")}</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => navigate("/company-dashboard")}
+                    >
+                      {t("openDashboard")} →
+                    </button>
+                  </div>
+                )}
+
+                {access && role === "admin" && (
+                  <div className="account-card">
+                    <div className="account-icon">🛡️</div>
+
+                    <div className="account-info">
+                      <span>{t("adminAccount")}</span>
+                      <h3>{t("adminDashboard")}</h3>
+                      <p>{t("adminDescription")}</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => navigate("/admin-dashboard")}
+                    >
+                      {t("openDashboard")} →
+                    </button>
+                  </div>
+                )}
+              </section>
+            )}
+
+            {/* SECURITY */}
+
+            {activeSection === "security" && access && (
+              <section className="settings-panel">
+                <div className="panel-heading">
+                  <h2>{t("security")}</h2>
+                  <p>{t("securityDescription")}</p>
+                </div>
+
+                <div className="setting-row">
+                  <div>
+                    <h3>{t("logout")}</h3>
+                    <p>{t("logoutDescription")}</p>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="logout-button"
+                    onClick={handleLogout}
+                  >
+                    {t("logout")}
+                  </button>
+                </div>
+
+                {role !== "admin" && (
+                  <div className="danger-zone">
+                    <div>
+                      <span className="danger-label">
+                        {t("dangerZone")}
+                      </span>
+
+                      <h3>{t("deleteAccount")}</h3>
+                      <p>{t("deleteAccountDescription")}</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="delete-button"
+                      onClick={() => {
+                        setShowDelete(true);
+                        setPassword("");
+                      }}
+                    >
+                      {t("deleteAccount")}
+                    </button>
+                  </div>
+                )}
+              </section>
+            )}
+          </main>
         </div>
-
-
-        {/* Delete Account Modal */}
-
-        {showDelete && (
-
-          <div className="delete-overlay">
-
-            <div className="delete-modal">
-
-              <h2>
-                Delete Account
-              </h2>
-
-              <p>
-                This action cannot be undone.
-                Enter your password to permanently
-                delete your account.
-              </p>
-
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
-              />
-
-              <div className="modal-actions">
-
-                <button
-                  className="cancel-button"
-                  onClick={() => {
-                    setShowDelete(false);
-                    setPassword("");
-                  }}
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-
-                <button
-                  className="confirm-delete-button"
-                  onClick={handleDeleteAccount}
-                  disabled={loading}
-                >
-                  {loading
-                    ? "Deleting..."
-                    : "Yes, Delete Account"}
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        )}
-
       </div>
 
+      {/* DELETE ACCOUNT MODAL */}
+
+      {showDelete && (
+        <div className="delete-overlay">
+          <div className="delete-modal">
+            <div className="delete-modal-icon">⚠️</div>
+
+            <h2>{t("deleteAccount")}</h2>
+
+            <p>{t("deleteAccountWarning")}</p>
+
+            <input
+              type="password"
+              placeholder={t("enterPassword")}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="cancel-button"
+                onClick={() => {
+                  setShowDelete(false);
+                  setPassword("");
+                }}
+                disabled={loading}
+              >
+                {t("cancel")}
+              </button>
+
+              <button
+                type="button"
+                className="confirm-delete-button"
+                onClick={handleDeleteAccount}
+                disabled={loading}
+              >
+                {loading
+                  ? t("deleting")
+                  : t("confirmDeleteButton")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Settings;
-

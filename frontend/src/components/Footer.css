@@ -1,0 +1,389 @@
+
+/* ========================================
+   JOBPORTAL - RESPONSIVE THEME-AWARE FOOTER
+======================================== */
+
+.site-footer {
+  --footer-bg: #ffffff;
+  --footer-text: #475569;
+  --footer-muted: #64748b;
+  --footer-heading: #111827;
+  --footer-border: #e2e8f0;
+  --footer-hover-bg: #f3e8ff;
+  --footer-hover-text: #7e22ce;
+  --footer-button-border: #dbe2ea;
+
+  width: 100%;
+  margin-top: 64px;
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  border-top: 1px solid var(--footer-border);
+  font-size: 1rem;
+  line-height: 1.6;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+  box-sizing: border-box;
+}
+
+.site-footer *,
+.site-footer *::before,
+.site-footer *::after {
+  box-sizing: border-box;
+}
+
+/* ========================================
+   DARK THEME
+   Supports theme on html or body
+======================================== */
+
+html[data-theme="dark"] .site-footer,
+body[data-theme="dark"] .site-footer {
+  --footer-bg: #111827;
+  --footer-text: #d1d5db;
+  --footer-muted: #a1a1aa;
+  --footer-heading: #f9fafb;
+  --footer-border: #293548;
+  --footer-hover-bg: rgba(168, 85, 247, 0.14);
+  --footer-hover-text: #d8b4fe;
+  --footer-button-border: #374151;
+}
+
+/* ========================================
+   MAIN FOOTER
+======================================== */
+
+.footer-main {
+  width: 100%;
+  border-bottom: 1px solid var(--footer-border);
+}
+
+.footer-container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 56px 28px 48px;
+
+  display: grid;
+  grid-template-columns: minmax(240px, 1.8fr) repeat(3, minmax(120px, 1fr));
+  gap: 42px;
+}
+
+/* ========================================
+   BRAND
+======================================== */
+
+.footer-brand {
+  max-width: 360px;
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+
+  color: var(--footer-heading);
+  text-decoration: none;
+  font-size: 1.35em;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+
+  transition: opacity 0.2s ease;
+}
+
+.footer-logo:hover {
+  opacity: 0.85;
+}
+
+.footer-logo-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+  background: var(--primary, #9333ea);
+  color: #ffffff;
+
+  font-size: 1.05em;
+  font-weight: 800;
+
+  box-shadow: 0 5px 14px rgba(147, 51, 234, 0.2);
+}
+
+.footer-brand p {
+  margin: 19px 0 15px;
+  color: var(--footer-muted);
+  font-size: 0.9em;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.footer-tagline {
+  display: inline-block;
+  color: var(--primary, #9333ea);
+  font-size: 0.85em;
+  font-weight: 750;
+  letter-spacing: 0.3px;
+}
+
+/* ========================================
+   FOOTER LINK COLUMNS
+======================================== */
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.footer-column h3 {
+  position: relative;
+  margin: 4px 0 23px;
+  padding-bottom: 10px;
+
+  color: var(--footer-heading);
+  font-size: 0.98em;
+  font-weight: 750;
+}
+
+.footer-column h3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 30px;
+  height: 3px;
+  border-radius: 10px;
+  background: var(--primary, #9333ea);
+}
+
+.footer-column a,
+.footer-column button {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0 0 13px;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: var(--footer-muted);
+  font-family: inherit;
+  font-size: 0.88em;
+  line-height: 1.6;
+  text-align: left;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.footer-column a:hover,
+.footer-column button:hover {
+  color: var(--footer-hover-text);
+  transform: translateX(3px);
+}
+
+/* Keyboard accessibility */
+
+.footer-logo:focus-visible,
+.footer-column a:focus-visible,
+.footer-column button:focus-visible,
+.back-to-top:focus-visible {
+  outline: 2px solid var(--primary, #9333ea);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* ========================================
+   BOTTOM BAR
+======================================== */
+
+.footer-bottom {
+  width: 100%;
+  background: var(--footer-bg);
+}
+
+.footer-bottom-container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 19px 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.footer-bottom-container p {
+  margin: 0;
+  color: var(--footer-muted);
+  font-size: 0.82em;
+  line-height: 1.7;
+}
+
+.back-to-top {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 9px 15px;
+  border: 1px solid var(--footer-button-border);
+  border-radius: 9px;
+
+  background: transparent;
+  color: var(--footer-text);
+
+  font-family: inherit;
+  font-size: 0.82em;
+  font-weight: 650;
+
+  white-space: nowrap;
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.back-to-top:hover {
+  color: var(--footer-hover-text);
+  border-color: var(--primary, #9333ea);
+  background: var(--footer-hover-bg);
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   FONT SIZE SETTINGS
+   Supports attributes on html or body
+======================================== */
+
+/* Small font */
+
+html[data-font-size="small"] .site-footer,
+body[data-font-size="small"] .site-footer {
+  font-size: 14px;
+}
+
+/* Medium font */
+
+html[data-font-size="medium"] .site-footer,
+body[data-font-size="medium"] .site-footer {
+  font-size: 16px;
+}
+
+/* Large font */
+
+html[data-font-size="large"] .site-footer,
+body[data-font-size="large"] .site-footer {
+  font-size: 18px;
+}
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 34px 28px;
+    padding: 45px 24px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+    max-width: 600px;
+  }
+
+  .footer-bottom-container {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+  .site-footer {
+    margin-top: 44px;
+  }
+
+  .footer-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 22px;
+    padding: 36px 20px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+    max-width: 100%;
+  }
+
+  .footer-brand p {
+    max-width: 440px;
+  }
+
+  .footer-column h3 {
+    margin-bottom: 18px;
+  }
+
+  .footer-column a,
+  .footer-column button {
+    margin-bottom: 12px;
+  }
+
+  .footer-bottom-container {
+    padding: 18px 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+  }
+}
+
+/* Small mobile */
+
+@media (max-width: 380px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  .footer-bottom-container {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}
+
+/* Respect reduced motion preference */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer *,
+  .site-footer *::before,
+  .site-footer *::after {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

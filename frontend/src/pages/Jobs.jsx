@@ -8,6 +8,7 @@ const Jobs = () => {
 
   const [jobs, setJobs] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchJobs();
@@ -15,10 +16,15 @@ const Jobs = () => {
 
   const fetchJobs = async () => {
     try {
+      setLoading(true);
+
       const response = await api.get("jobs/");
+
       setJobs(response.data);
     } catch (error) {
-      console.log(error);
+      console.log("Jobs Error:", error.response?.data);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,83 +34,96 @@ const Jobs = () => {
       .includes(search.toLowerCase())
   );
 
-  return (
-    <div className="jobs-page">
-
-      <section className="jobs-hero">
-
-        <h1>Find Your Next Opportunity</h1>
+return (
+  <main className="jobs-page">
+    <section className="jobs-section" id="jobs-section">
+      <div className="section-heading">
+        <div>
+          <span>OPPORTUNITIES</span>
+          <h1>Find Your Next Job</h1>
+        </div>
 
         <p>
-          Discover jobs and take the next step in your career.
+          Explore opportunities that match your skills
+          and career goals.
         </p>
+      </div>
+
+      <div className="jobs-search">
+        <span>🔎</span>
 
         <input
-          type="text"
-          placeholder="Search jobs, location or skills..."
+          type="search"
+          placeholder="Search by job title, skill or location..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          aria-label="Search jobs"
         />
 
-      </section>
+        {search && (
+          <button
+            type="button"
+            onClick={() => setSearch("")}
+          >
+            Clear
+          </button>
+        )}
+      </div>
 
-      <section className="jobs-container">
-
-        <h2>Available Jobs</h2>
-
-        {filteredJobs.length === 0 ? (
-          <p className="no-jobs">
-            No jobs found.
-          </p>
-        ) : (
-
-          <div className="jobs-grid">
-
-            {filteredJobs.map((job) => (
-
-              <div
-                className="job-card"
-                key={job.id}
-              >
-
-                <h3>{job.title}</h3>
-
-                <p className="job-location">
-                  📍 {job.location}
-                </p>
-
-                <p className="job-salary">
-                  ₹{job.salary}
-                </p>
-
-                <div className="job-bottom">
-
-                  <span>
-                    View full job details
-                  </span>
-
-                  <button
-                    onClick={() =>
-                      navigate(`/job/${job.id}`)
-                    }
-                  >
-                    View Details
-                  </button>
-
+      {loading ? (
+        <div className="jobs-loading">
+          Loading opportunities...
+        </div>
+      ) : filteredJobs.length === 0 ? (
+        <div className="empty-jobs">
+          <div>🔍</div>
+          <h3>No jobs found</h3>
+          <p>Try searching with a different keyword.</p>
+        </div>
+      ) : (
+        <div className="jobs-grid">
+          {filteredJobs.map((job) => (
+            <article className="job-card" key={job.id}>
+              <div className="job-card-header">
+                <div className="company-placeholder">
+                  {job.title?.charAt(0)?.toUpperCase()}
                 </div>
 
+                <span className="job-type">Full-time</span>
               </div>
 
-            ))}
+              <h3>{job.title}</h3>
 
-          </div>
+              <p className="job-location">
+                📍 {job.location}
+              </p>
 
-        )}
+              <p className="job-description">
+                {job.description
+                  ? job.description.length > 100
+                    ? `${job.description.substring(0, 100)}...`
+                    : job.description
+                  : "Explore this opportunity and take the next step in your career."}
+              </p>
 
-      </section>
+              <div className="job-card-meta">
+                <strong>₹{job.salary}</strong>
+                <span>Salary</span>
+              </div>
 
-    </div>
-  );
-};
+              <button
+                className="job-details-button"
+                onClick={() => navigate(`/job/${job.id}`)}
+              >
+                View Job Details <span>→</span>
+              </button>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  </main>
+);
+}
 
-export default Jobs;
+export default Jobs

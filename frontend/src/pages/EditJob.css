@@ -3,26 +3,14 @@
   min-height: calc(100vh - 72px);
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   padding: 50px 20px 70px;
+  background: var(--background);
 }
-
-/* Loading */
-
-.edit-job-loading {
-  min-height: calc(100vh - 72px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-light);
-  font-size: 15px;
-}
-
-/* Card */
 
 .edit-job-card {
   width: 100%;
   max-width: 760px;
-  align-self: flex-start;
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: 18px;
@@ -30,12 +18,20 @@
   box-shadow: var(--shadow-md);
 }
 
-/* Header */
-
 .edit-job-header {
-  margin-bottom: 30px;
+  margin-bottom: 28px;
   padding-bottom: 22px;
   border-bottom: 1px solid var(--border);
+}
+
+.edit-job-eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
 }
 
 .edit-job-header h1 {
@@ -47,12 +43,11 @@
 }
 
 .edit-job-header p {
-  margin-top: 7px;
+  margin: 9px 0 0;
   color: var(--text-light);
   font-size: 14px;
+  line-height: 1.7;
 }
-
-/* Form */
 
 .edit-job-form {
   display: flex;
@@ -67,20 +62,24 @@
   font-weight: 650;
 }
 
+.edit-job-form label span {
+  color: #dc2626;
+}
+
 .edit-job-form input,
-.edit-job-form textarea,
-.edit-job-form select {
+.edit-job-form textarea {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 9px;
   outline: none;
   background: var(--white);
   color: var(--text-dark);
-  transition: 0.2s ease;
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.edit-job-form input,
-.edit-job-form select {
+.edit-job-form input {
   height: 46px;
   padding: 0 13px;
 }
@@ -89,37 +88,47 @@
   min-height: 140px;
   padding: 13px;
   resize: vertical;
-  line-height: 1.5;
+  line-height: 1.6;
+}
+
+.edit-job-form input::placeholder,
+.edit-job-form textarea::placeholder {
+  color: var(--text-light);
+  opacity: 0.8;
 }
 
 .edit-job-form input:focus,
-.edit-job-form textarea:focus,
-.edit-job-form select:focus {
+.edit-job-form textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-/* Actions */
+.edit-job-hint {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 12px;
+  line-height: 1.5;
+}
 
 .edit-job-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
   margin-top: 25px;
-  padding-top: 20px;
+  padding-top: 22px;
   border-top: 1px solid var(--border);
 }
 
-.edit-job-actions button {
-  min-width: 110px;
-  height: 44px;
+.edit-job-actions button,
+.edit-job-error-card button {
+  min-height: 44px;
   border: none;
   border-radius: 9px;
-  padding: 0 18px;
+  padding: 0 20px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .edit-cancel-btn {
@@ -127,29 +136,121 @@
   background: #f1f5f9;
 }
 
-.edit-cancel-btn:hover {
+.edit-cancel-btn:hover:not(:disabled) {
   background: #e2e8f0;
 }
 
 .edit-update-btn {
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: #fff;
   background: var(--primary);
 }
 
-.edit-update-btn:hover {
+.edit-update-btn:hover:not(:disabled) {
   background: var(--primary-dark);
   transform: translateY(-1px);
 }
 
-/* Mobile */
+.edit-job-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.edit-job-message {
+  margin-bottom: 18px;
+  padding: 13px 15px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.edit-job-message-error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.edit-job-message-success {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.edit-job-loading {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+.edit-job-loading p {
+  margin: 0;
+}
+
+.edit-job-spinner,
+.edit-button-spinner {
+  display: inline-block;
+  border: 3px solid rgba(100, 116, 139, 0.2);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: edit-job-spin 0.75s linear infinite;
+}
+
+.edit-job-spinner {
+  width: 32px;
+  height: 32px;
+}
+
+.edit-button-spinner {
+  width: 15px;
+  height: 15px;
+  border-width: 2px;
+  border-color: rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+}
+
+.edit-job-error-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.edit-job-error-card h2,
+.edit-job-error-card p {
+  margin: 0;
+}
+
+.edit-job-error-card h2 {
+  color: var(--text-dark);
+}
+
+.edit-job-error-card p {
+  color: var(--text-light);
+}
+
+@keyframes edit-job-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 @media (max-width: 600px) {
   .edit-job-page {
-    padding: 30px 16px 50px;
+    min-height: calc(100vh - 60px);
+    padding: 28px 15px 45px;
   }
 
   .edit-job-card {
-    padding: 25px 20px;
+    padding: 25px 19px;
     border-radius: 14px;
   }
 
@@ -163,5 +264,18 @@
 
   .edit-job-actions button {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edit-job-spinner,
+  .edit-button-spinner {
+    animation-duration: 1.5s;
+  }
+
+  .edit-job-form input,
+  .edit-job-form textarea,
+  .edit-job-actions button {
+    transition: none;
   }
 }

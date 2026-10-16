@@ -1,53 +1,61 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 import api from "../services/api";
 import "./JobDetails.css";
 
 const JobDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    fetchJob();
-  }, [id]);
+  const fetchJob = useCallback(async () => {
+    setLoading(true);
+    setError("");
 
-  const fetchJob = async () => {
     try {
       const response = await api.get(`jobs/${id}/`);
       setJob(response.data);
-    } catch (error) {
-      console.log("Error:", error.response?.data);
-      alert("Failed to load job details");
+    } catch (err) {
+      console.error("Error loading job:", err.response?.data);
+      setJob(null);
+      setError(t("jobDetailsLoadError"));
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, t]);
+
+  useEffect(() => {
+    fetchJob();
+  }, [fetchJob]);
 
   const handleApply = async () => {
-    try {
-      setApplying(true);
+    if (!job || applying) return;
 
+    setApplying(true);
+    setError("");
+    setMessage("");
+
+    try {
       await api.post("applications/apply/", {
         job_id: job.id,
       });
 
-      alert("Application Submitted Successfully");
+      setMessage(t("jobDetailsApplySuccess"));
+    } catch (err) {
+      console.error("Application error:", err.response?.data);
 
-    } catch (error) {
-      console.log(
-        "Error:",
-        error.response?.data
-      );
+      const responseError =
+        err.response?.data?.error ||
+        err.response?.data?.detail;
 
-      alert(
-        error.response?.data?.error ||
-        "Application Failed"
-      );
-
+      setError(responseError || t("jobDetailsApplyError"));
     } finally {
       setApplying(false);
     }
@@ -55,79 +63,118 @@ const JobDetails = () => {
 
   if (loading) {
     return (
-      <div className="job-details-loading">
-        Loading job details...
+      <div className="job-details-loading" role="status">
+        <span className="job-details-spinner" />
+        <p>{t("jobDetailsLoading")}</p>
       </div>
     );
   }
 
   if (!job) {
     return (
-      <div className="job-details-error">
-        <h2>Job Not Found</h2>
+      <div className="job-details-page">
+        <section className="job-details-card job-details-error">
+          <div className="job-details-error-icon">!</div>
+          <h2>{t("jobDetailsNotFound")}</h2>
+          <p>{error || t("jobDetailsLoadError")}</p>
 
-        <button onClick={() => navigate("/")}>
-          Back to Jobs
-        </button>
+          <div className="job-details-error-actions">
+            <button
+              type="button"
+              className="back-btn"
+              onClick={() => navigate("/")}
+            >
+              {t("jobDetailsBack")}
+            </button>
+
+            <button
+              type="button"
+              className="apply-btn"
+              onClick={fetchJob}
+            >
+              {t("jobDetailsTryAgain")}
+            </button>
+          </div>
+        </section>
       </div>
     );
   }
 
   return (
-    <div className="job-details-page">
+    <main className="job-details-page">
+      <article className="job-details-card">
+        <header className="job-details-header">
+          <div className="job-details-heading">
+            <span className="job-details-eyebrow">
+              {t("jobDetailsEyebrow")}
+            </span>
 
-      <div className="job-details-card">
-
-        <div className="job-details-header">
-
-          <div>
             <h1>{job.title}</h1>
 
             <p className="details-location">
-              📍 {job.location}
+              <span aria-hidden="true">📍</span>{" "}
+              {job.location || t("jobDetailsLocationMissing")}
             </p>
           </div>
 
           <div className="details-salary">
-            ₹{job.salary}
+            <span className="salary-label">
+              {t("jobDetailsSalaryLabel")}
+            </span>
+            <strong>
+              {job.salary !== null && job.salary !== undefined &&
+              job.salary !== ""
+                ? `₹${Number(job.salary).toLocaleString("en-IN")}`
+                : t("jobDetailsSalaryMissing")}
+            </strong>
           </div>
+        </header>
 
-        </div>
-
-        <div className="job-details-section">
-
-          <h2>Job Description</h2>
+        <section className="job-details-section">
+          <h2>{t("jobDetailsDescriptionTitle")}</h2>
 
           <p className="full-description">
-            {job.description}
+            {job.description || t("jobDetailsDescriptionMissing")}
           </p>
+        </section>
 
-        </div>
+        {error && (
+          <div className="job-details-feedback error" role="alert">
+            {error}
+          </div>
+        )}
 
-        <div className="job-details-actions">
+        {message && (
+          <div className="job-details-feedback success" role="status">
+            {message}
+          </div>
+        )}
 
+        <footer className="job-details-actions">
           <button
+            type="button"
             className="back-btn"
             onClick={() => navigate("/")}
+            disabled={applying}
           >
-            ← Back to Jobs
+            {t("jobDetailsBack")}
           </button>
 
           <button
+            type="button"
             className="apply-btn"
             onClick={handleApply}
-            disabled={applying}
+            disabled={applying || Boolean(message)}
           >
             {applying
-              ? "Applying..."
-              : "Apply Now"}
+              ? t("jobDetailsApplying")
+              : message
+                ? t("jobDetailsApplied")
+                : t("jobDetailsApply")}
           </button>
-
-        </div>
-
-      </div>
-
-    </div>
+        </footer>
+      </article>
+    </main>
   );
 };
 

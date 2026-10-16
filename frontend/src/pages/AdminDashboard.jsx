@@ -12,16 +12,10 @@ const AdminDashboard = () => {
 
   const fetchDashboard = async () => {
     try {
-      const response = await api.get(
-        "accounts/admin-dashboard/"
-      );
-
+      const response = await api.get("accounts/admin-dashboard/");
       setDashboard(response.data);
     } catch (error) {
-      console.log(
-        "Error:",
-        error.response?.data
-      );
+      console.log("Error:", error.response?.data);
     } finally {
       setLoading(false);
     }
@@ -29,148 +23,183 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="admin-loading">
-        Loading dashboard...
+      <div className="admin-state-page">
+        <div className="admin-state-card">
+          <span className="admin-spinner"></span>
+          <h2>Loading dashboard</h2>
+          <p>Please wait while we prepare your overview.</p>
+        </div>
       </div>
     );
   }
 
   if (!dashboard) {
     return (
-      <div className="admin-error">
-        <h2>Unable to load dashboard</h2>
-        <p>Please login as Admin and try again.</p>
+      <div className="admin-state-page">
+        <div className="admin-state-card admin-error">
+          <div className="admin-state-icon">!</div>
+          <h2>Unable to load dashboard</h2>
+          <p>Please login as Admin and try again.</p>
+          <button
+            type="button"
+            className="admin-retry-button"
+            onClick={() => {
+              setLoading(true);
+              fetchDashboard();
+            }}
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
 
+  const stats = [
+    {
+      label: "Total Students",
+      value: dashboard.students,
+      icon: "👨‍🎓",
+      description: "Registered job seekers",
+      type: "students",
+    },
+    {
+      label: "Total Companies",
+      value: dashboard.companies,
+      icon: "🏢",
+      description: "Registered employers",
+      type: "companies",
+    },
+    {
+      label: "Total Jobs",
+      value: dashboard.jobs,
+      icon: "💼",
+      description: "Published opportunities",
+      type: "jobs",
+    },
+    {
+      label: "Total Applications",
+      value: dashboard.applications,
+      icon: "📄",
+      description: "Applications submitted",
+      type: "applications",
+    },
+  ];
+
   return (
-    <div className="admin-dashboard">
+    <main className="admin-dashboard">
+      <header className="admin-header">
+        <div>
+          <span className="admin-eyebrow">
+            JOBPORTAL MANAGEMENT
+          </span>
 
-      <div className="admin-header">
-        <h1>Admin Dashboard</h1>
+          <h1>Admin Dashboard</h1>
 
-        <p>
-          Overview of the Job Portal platform.
-        </p>
-      </div>
-
-      <div className="admin-stats">
-
-        <div className="admin-stat-card">
-          <div className="stat-icon">
-            👨‍🎓
-          </div>
-
-          <div>
-            <span>Total Students</span>
-            <strong>{dashboard.students}</strong>
-          </div>
+          <p>
+            Monitor platform activity and get an overview
+            of your recruitment community.
+          </p>
         </div>
 
-        <div className="admin-stat-card">
-          <div className="stat-icon">
-            🏢
-          </div>
+        <div className="admin-header-badge">
+          <span className="admin-status-dot"></span>
+          Administrator
+        </div>
+      </header>
 
-          <div>
-            <span>Total Companies</span>
-            <strong>{dashboard.companies}</strong>
-          </div>
+      <section className="admin-welcome">
+        <div className="admin-welcome-content">
+          <span>PLATFORM OVERVIEW</span>
+          <h2>Everything at a glance.</h2>
+          <p>
+            Track students, companies, job opportunities,
+            and applications from one place.
+          </p>
         </div>
 
-        <div className="admin-stat-card">
-          <div className="stat-icon">
-            💼
-          </div>
-
-          <div>
-            <span>Total Jobs</span>
-            <strong>{dashboard.jobs}</strong>
-          </div>
+        <div className="admin-welcome-art" aria-hidden="true">
+          <span>J</span>
         </div>
+      </section>
 
-        <div className="admin-stat-card">
-          <div className="stat-icon">
-            📄
-          </div>
+      <section
+        className="admin-stats"
+        aria-label="Platform statistics"
+      >
+        {stats.map((stat) => (
+          <article
+            className={`admin-stat-card stat-${stat.type}`}
+            key={stat.type}
+          >
+            <div className="admin-stat-top">
+              <div className="stat-icon">
+                {stat.icon}
+              </div>
 
-          <div>
-            <span>Total Applications</span>
-            <strong>{dashboard.applications}</strong>
-          </div>
-        </div>
+              <span className="stat-indicator">
+                Overview
+              </span>
+            </div>
 
-      </div>
-
-      <div className="admin-overview">
-
-        <h2>Platform Overview</h2>
-
-        <div className="overview-card">
-
-          <div>
-            <h3>Students</h3>
-            <p>
-              Registered job seekers
+            <p className="admin-stat-label">
+              {stat.label}
             </p>
-          </div>
 
-          <strong>
-            {dashboard.students}
-          </strong>
+            <strong className="admin-stat-value">
+              {stat.value ?? 0}
+            </strong>
 
-        </div>
-
-        <div className="overview-card">
-
-          <div>
-            <h3>Companies</h3>
-            <p>
-              Registered employers
+            <p className="admin-stat-description">
+              {stat.description}
             </p>
-          </div>
+          </article>
+        ))}
+      </section>
 
-          <strong>
-            {dashboard.companies}
-          </strong>
-
-        </div>
-
-        <div className="overview-card">
-
+      <section className="admin-overview-section">
+        <div className="admin-section-heading">
           <div>
-            <h3>Job Opportunities</h3>
-            <p>
-              Jobs currently posted
-            </p>
+            <span className="admin-eyebrow">
+              PLATFORM SUMMARY
+            </span>
+            <h2>Platform Overview</h2>
           </div>
 
-          <strong>
-            {dashboard.jobs}
-          </strong>
-
+          <p>
+            A quick summary of the current platform totals.
+          </p>
         </div>
 
-        <div className="overview-card">
+        <div className="admin-overview">
+          {stats.map((stat, index) => (
+            <article
+              className="overview-card"
+              key={stat.type}
+            >
+              <div className="overview-card-icon">
+                {stat.icon}
+              </div>
 
-          <div>
-            <h3>Applications</h3>
-            <p>
-              Total applications submitted
-            </p>
-          </div>
+              <div className="overview-card-content">
+                <h3>{stat.label}</h3>
+                <p>{stat.description}</p>
+              </div>
 
-          <strong>
-            {dashboard.applications}
-          </strong>
+              <strong className="overview-card-value">
+                {stat.value ?? 0}
+              </strong>
 
+              <span className="overview-card-number">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+            </article>
+          ))}
         </div>
-
-      </div>
-
-    </div>
+      </section>
+    </main>
   );
 };
 
 export default AdminDashboard;
+

@@ -1,22 +1,50 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* =========================================
+   GLOBAL JOBPORTAL SETTINGS
+========================================= */
+
+html {
+  font-size: 16px;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
 }
 
-:root {
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --primary-light: #eef2ff;
+
+/* =========================================
+   FONT SIZE SYSTEM
+========================================= */
+
+html[data-font-size="small"] {
+  --font-scale: 0.92;
+}
+
+html[data-font-size="medium"] {
+  --font-scale: 1;
+}
+
+html[data-font-size="large"] {
+  --font-scale: 1.10;
+}
+
+
+/* =========================================
+   LIGHT THEME
+========================================= */
+
+html[data-theme="light"] {
+  --background: #f8fafc;
+  --white: #ffffff;
 
   --text-dark: #111827;
   --text: #4b5563;
   --text-light: #6b7280;
 
-  --background: #f8fafc;
-  --white: #ffffff;
-
   --border: #e5e7eb;
+
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --primary-light: #eef2ff;
 
   --success: #16a34a;
   --success-bg: #dcfce7;
@@ -26,56 +54,63 @@
 
   --warning: #d97706;
   --warning-bg: #fef3c7;
-
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 8px 25px rgba(15, 23, 42, 0.08);
-
-  --radius: 14px;
-
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  color: var(--text);
-  background: var(--background);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
 }
 
-html,
-body,
-#root {
-  width: 100%;
-  min-height: 100vh;
+
+/* =========================================
+   DARK THEME
+========================================= */
+
+html[data-theme="dark"] {
+  --background: #0f172a;
+  --white: #1e293b;
+
+  --text-dark: #f8fafc;
+  --text: #cbd5e1;
+  --text-light: #94a3b8;
+
+  --border: #334155;
+
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --primary-light: #312e81;
+
+  --success: #4ade80;
+  --success-bg: #14532d;
+
+  --danger: #f87171;
+  --danger-bg: #450a0a;
+
+  --warning: #fbbf24;
+  --warning-bg: #451a03;
 }
+
+
+/* =========================================
+   BODY
+========================================= */
 
 body {
   margin: 0;
+
   background: var(--background);
+  color: var(--text-dark);
+
+  font-size: calc(16px * var(--font-scale, 1));
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
 }
+
+
+/* =========================================
+   COMMON TEXT SCALING
+========================================= */
 
 button,
 input,
 textarea,
 select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  text-decoration: none;
-}
-
-#root {
-  width: 100%;
-  min-height: 100vh;
+  font-size: calc(1em * var(--font-scale, 1));
 }

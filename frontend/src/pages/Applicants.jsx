@@ -1,75 +1,72 @@
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 import api from "../services/api";
 import "./Applicants.css";
 
 function Applicants() {
   const { id } = useParams();
+  const { t } = useLanguage();
 
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(null);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchApplicants();
-  }, [id]);
+  const fetchApplicants = useCallback(async () => {
+    setLoading(true);
+    setError("");
 
-  const fetchApplicants = async () => {
     try {
-      const response = await api.get(
-        `jobs/${id}/applicants/`
+      const response = await api.get(`jobs/${id}/applicants/`);
+      setApplicants(
+        Array.isArray(response.data) ? response.data : []
       );
-
-      setApplicants(response.data);
-    } catch (error) {
-      console.log(
-        "Error:",
-        error.response?.data
-      );
+    } catch (err) {
+      console.error("Error fetching applicants:", err.response?.data);
+      setError(t("applicantsLoadError"));
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, t]);
 
-  const acceptApplication = async (applicationId) => {
+  useEffect(() => {
+    fetchApplicants();
+  }, [fetchApplicants]);
+
+  const updateApplication = async (applicationId, decision) => {
+    setActionLoading(applicationId);
+    setError("");
+
     try {
       await api.post(
-        `applications/${applicationId}/accept/`
+        `applications/${applicationId}/${decision}/`
       );
 
-      alert("Application Accepted");
-
-      fetchApplicants();
-    } catch (error) {
-      console.log(
-        "Error:",
-        error.response?.data
-      );
-    }
-  };
-
-  const rejectApplication = async (applicationId) => {
-    try {
-      await api.post(
-        `applications/${applicationId}/reject/`
+      window.alert(
+        decision === "accept"
+          ? t("applicationAccepted")
+          : t("applicationRejected")
       );
 
-      alert("Application Rejected");
-
-      fetchApplicants();
-    } catch (error) {
-      console.log(
-        "Error:",
-        error.response?.data
-      );
+      await fetchApplicants();
+    } catch (err) {
+      console.error("Error updating application:", err.response?.data);
+      setError(t("applicationUpdateError"));
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const getStatusClass = (status) => {
-    if (status === "Accepted") {
+    const normalizedStatus = (status || "Pending").toLowerCase();
+
+    if (normalizedStatus === "accepted") {
       return "applicant-status accepted";
     }
 
-    if (status === "Rejected") {
+    if (normalizedStatus === "rejected") {
       return "applicant-status rejected";
     }
 
@@ -78,149 +75,164 @@ function Applicants() {
 
   if (loading) {
     return (
-      <div className="applicants-loading">
-        Loading applicants...
-      </div>
+      <main className="applicants-page">
+        <div className="applicants-state" role="status">
+          <span className="applicants-spinner" />
+          <h2>{t("applicantsLoading")}</h2>
+          <p>{t("applicantsLoadingDescription")}</p>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="applicants-page">
+    <main className="applicants-page">
+      <header className="applicants-header">
+        <div className="applicants-heading">
+          <span className="applicants-eyebrow">
+            {t("applicantsManagement")}
+          </span>
 
-      <div className="applicants-header">
+          <h1>{t("applicantsTitle")}</h1>
 
-        <h1>Applicants</h1>
-
-        <p>
-          Review and manage applications for this job.
-        </p>
+          <p>{t("applicantsDescription")}</p>
+        </div>
 
         <div className="applicant-total">
-          Total Applicants: {applicants.length}
+          <span className="applicant-total-icon">👥</span>
+          <span>
+            <strong>{applicants.length.toLocaleString()}</strong>
+            <small>{t("applicantsTotal")}</small>
+          </span>
         </div>
+      </header>
 
-      </div>
-
-      {applicants.length === 0 ? (
-
-        <div className="no-applicants">
-
-          <h2>No Applicants Yet</h2>
-
-          <p>
-            No one has applied for this job yet.
-          </p>
-
+      {error && (
+        <div className="applicants-error" role="alert">
+          <span>{error}</span>
+          <button type="button" onClick={fetchApplicants}>
+            {t("applicantsTryAgain")}
+          </button>
         </div>
-
-      ) : (
-
-        <div className="applicants-list">
-
-          {applicants.map((app) => (
-
-            <div
-              className="applicant-card"
-              key={app.application_id}
-            >
-
-              <div className="applicant-top">
-
-                <div>
-                  <h2>{app.student}</h2>
-
-                  <p className="education">
-                    🎓 {app.education}
-                  </p>
-                </div>
-
-                <span
-                  className={getStatusClass(
-                    app.status
-                  )}
-                >
-                  {app.status || "Pending"}
-                </span>
-
-              </div>
-
-              <div className="applicant-details">
-
-                <div className="detail-section">
-
-                  <h4>Skills</h4>
-
-                  <p>
-                    {app.skills}
-                  </p>
-
-                </div>
-
-                <div className="detail-section">
-
-                  <h4>Applied At</h4>
-
-                  <p>
-                    {new Date(
-                      app.applied_at
-                    ).toLocaleString()}
-                  </p>
-
-                </div>
-
-              </div>
-
-              <div className="applicant-actions">
-
-                {app.resume && (
-                  <a
-                    className="resume-btn"
-                    href={`http://127.0.0.1:8000${app.resume}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    📄 View Resume
-                  </a>
-                )}
-
-                {app.status !== "Accepted" &&
-                  app.status !== "Rejected" && (
-                    <>
-                      <button
-                        className="accept-btn"
-                        onClick={() =>
-                          acceptApplication(
-                            app.application_id
-                          )
-                        }
-                      >
-                        ✓ Accept
-                      </button>
-
-                      <button
-                        className="reject-btn"
-                        onClick={() =>
-                          rejectApplication(
-                            app.application_id
-                          )
-                        }
-                      >
-                        ✕ Reject
-                      </button>
-                    </>
-                  )}
-
-              </div>
-
-            </div>
-
-          ))}
-
-        </div>
-
       )}
 
-    </div>
+      {applicants.length === 0 ? (
+        <section className="no-applicants">
+          <div className="empty-applicants-icon">📄</div>
+          <h2>{t("noApplicantsTitle")}</h2>
+          <p>{t("noApplicantsDescription")}</p>
+        </section>
+      ) : (
+        <section className="applicants-list" aria-label={t("applicantsTitle")}>
+          {applicants.map((app) => {
+            const status = app.status || "Pending";
+            const isProcessing =
+              actionLoading === app.application_id;
+
+            return (
+              <article
+                className="applicant-card"
+                key={app.application_id}
+              >
+                <div className="applicant-top">
+                  <div className="applicant-identity">
+                    <div className="applicant-avatar" aria-hidden="true">
+                      {(app.student || "?").trim().charAt(0).toUpperCase()}
+                    </div>
+
+                    <div className="applicant-name">
+                      <h2>{app.student || t("applicantUnknown")}</h2>
+                      <p className="education">
+                        <span aria-hidden="true">🎓</span>{" "}
+                        {app.education || t("applicantNotProvided")}
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className={getStatusClass(status)}>
+                    {status.toLowerCase() === "accepted"
+                      ? t("applicationStatusAccepted")
+                      : status.toLowerCase() === "rejected"
+                        ? t("applicationStatusRejected")
+                        : t("applicationStatusPending")}
+                  </span>
+                </div>
+
+                <div className="applicant-details">
+                  <div className="detail-section">
+                    <h4>{t("applicantSkills")}</h4>
+                    <p>{app.skills || t("applicantNotProvided")}</p>
+                  </div>
+
+                  <div className="detail-section">
+                    <h4>{t("applicantAppliedAt")}</h4>
+                    <p>
+                      {app.applied_at
+                        ? new Date(app.applied_at).toLocaleString()
+                        : t("applicantNotProvided")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="applicant-actions">
+                  {app.resume && (
+                    <a
+                      className="resume-btn"
+                      href={
+                        app.resume.startsWith("http")
+                          ? app.resume
+                          : `http://127.0.0.1:8000${app.resume}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      📄 {t("applicantViewResume")}
+                    </a>
+                  )}
+
+                  {status.toLowerCase() !== "accepted" &&
+                    status.toLowerCase() !== "rejected" && (
+                      <>
+                        <button
+                          type="button"
+                          className="accept-btn"
+                          disabled={isProcessing}
+                          onClick={() =>
+                            updateApplication(
+                              app.application_id,
+                              "accept"
+                            )
+                          }
+                        >
+                          {isProcessing
+                            ? t("applicantProcessing")
+                            : `✓ ${t("applicantAccept")}`}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="reject-btn"
+                          disabled={isProcessing}
+                          onClick={() =>
+                            updateApplication(
+                              app.application_id,
+                              "reject"
+                            )
+                          }
+                        >
+                          {isProcessing
+                            ? t("applicantProcessing")
+                            : `✕ ${t("applicantReject")}`}
+                        </button>
+                      </>
+                    )}
+                </div>
+              </article>
+            );
+          })}
+        </section>
+      )}
+    </main>
   );
 }
 

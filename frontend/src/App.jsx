@@ -1,10 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import { LanguageProvider } from "./context/LanguageContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Settings from "./pages/Settings";
-import JobDetails from "./pages/JobDetails"
+import JobDetails from "./pages/JobDetails";
+import Landing from "./pages/Landing";
 import Jobs from "./pages/Jobs";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -15,9 +18,12 @@ import CreateJob from "./pages/CreateJob";
 import Applicants from "./pages/Applicants";
 import EditJob from "./pages/EditJob";
 import AdminDashboard from "./pages/AdminDashboard";
+import Forgot from "./pages/Forgot";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   return (
+  <LanguageProvider>
     <BrowserRouter>
 
       <Navbar />
@@ -25,9 +31,10 @@ const App = () => {
       <Routes>
 
         {/* Public Pages */}
+
         <Route
           path="/"
-          element={<Jobs />}
+          element={<Landing />}
         />
 
         <Route
@@ -40,9 +47,18 @@ const App = () => {
           element={<Register />}
         />
 
-        <Route path="/job/:id" element={<JobDetails />} />
+        <Route
+          path="/job/:id"
+          element={<JobDetails />}
+        />
+         
+         <Route
+          path="/jobs"
+          element={<Jobs />}
+        />
 
         {/* Student Pages */}
+
         <Route
           path="/student-dashboard"
           element={
@@ -62,6 +78,7 @@ const App = () => {
         />
 
         {/* Company Pages */}
+
         <Route
           path="/company-dashboard"
           element={
@@ -99,6 +116,7 @@ const App = () => {
         />
 
         {/* Admin Page */}
+
         <Route
           path="/admin-dashboard"
           element={
@@ -108,18 +126,25 @@ const App = () => {
           }
         />
 
-        <Route
-  path="/settings"
-  element={
-    <ProtectedRoute>
-      <Settings />
-    </ProtectedRoute>
-  }
-/>
+        {/* Settings */}
+
+      <Route
+      path="/settings"
+      element={<Settings />}
+      />
+
+    <Route path="/forgot-password" element={<Forgot />} />
+    <Route
+     path="/reset-password/:uid/:token"
+     element={<ResetPassword />}
+    />
 
       </Routes>
 
+      <Footer />
+
     </BrowserRouter>
+  </LanguageProvider>
   );
 };
 

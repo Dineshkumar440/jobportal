@@ -1,148 +1,205 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 import api from "../services/api";
 import "./CreateJob.css";
 
+const initialJob = {
+  title: "",
+  description: "",
+  location: "",
+  salary: "",
+};
+
 function CreateJob() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
-  const [job, setJob] = useState({
-    title: "",
-    description: "",
-    location: "",
-    salary: "",
-  });
-
+  const [job, setJob] = useState(initialJob);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setJob({
-      ...job,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setJob((previousJob) => ({
+      ...previousJob,
+      [name]: value,
+    }));
+
+    if (error) setError("");
   };
 
   const createJob = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (
-      !job.title ||
-      !job.description ||
-      !job.location ||
-      !job.salary
+      !job.title.trim() ||
+      !job.description.trim() ||
+      !job.location.trim() ||
+      job.salary === ""
     ) {
-      alert("Please fill all fields");
+      setError(t("createJobRequiredError"));
+      return;
+    }
+
+    if (Number(job.salary) < 0 || !Number.isFinite(Number(job.salary))) {
+      setError(t("createJobSalaryError"));
       return;
     }
 
     try {
       setLoading(true);
 
-      const response = await api.post(
-        "jobs/",
-        job
-      );
+      const payload = {
+        title: job.title.trim(),
+        description: job.description.trim(),
+        location: job.location.trim(),
+        salary: Number(job.salary),
+      };
 
-      console.log(response.data);
+      const response = await api.post("jobs/", payload);
 
-      alert("Job Created Successfully");
+      console.log("Job created:", response.data);
 
-      setJob({
-        title: "",
-        description: "",
-        location: "",
-        salary: "",
-      });
-
+      window.alert(t("createJobSuccess"));
+      setJob(initialJob);
       navigate("/company-dashboard");
+    } catch (err) {
+      console.error("Error creating job:", err.response?.data);
 
-    } catch (error) {
-      console.log(
-        "Error:",
-        error.response?.data
-      );
+      const serverError =
+        err.response?.data?.detail ||
+        err.response?.data?.message;
 
-      alert(
-        error.response?.data?.detail ||
-        "Failed to create job"
-      );
-
+      setError(serverError || t("createJobFailure"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="create-job-page">
+    <main className="create-job-page">
+      <section className="create-job-card">
+        <header className="create-job-header">
+          <div className="create-job-heading-icon" aria-hidden="true">
+            💼
+          </div>
 
-      <div className="create-job-card">
+          <span className="create-job-eyebrow">
+            {t("createJobEyebrow")}
+          </span>
 
-        <div className="create-job-header">
+          <h1>{t("createJobTitle")}</h1>
 
-          <h1>Create Job</h1>
+          <p>{t("createJobDescription")}</p>
+        </header>
 
-          <p>
-            Post a new job opportunity for candidates.
-          </p>
+        {error && (
+          <div className="create-job-error" role="alert">
+            <span aria-hidden="true">!</span>
+            <p>{error}</p>
+          </div>
+        )}
 
-        </div>
+        <form onSubmit={createJob} className="create-job-form">
+          <div className="create-job-field">
+            <label htmlFor="job-title">
+              {t("createJobTitleLabel")}
+              <span aria-hidden="true"> *</span>
+            </label>
 
-        <form
-          onSubmit={createJob}
-          className="create-job-form"
-        >
+            <input
+              id="job-title"
+              type="text"
+              name="title"
+              placeholder={t("createJobTitlePlaceholder")}
+              value={job.title}
+              onChange={handleChange}
+              maxLength={150}
+              required
+              disabled={loading}
+            />
+          </div>
 
-          <label>Job Title</label>
+          <div className="create-job-field">
+            <label htmlFor="job-description">
+              {t("createJobDescriptionLabel")}
+              <span aria-hidden="true"> *</span>
+            </label>
 
-          <input
-            type="text"
-            name="title"
-            placeholder="e.g. Python Developer"
-            value={job.title}
-            onChange={handleChange}
-          />
+            <textarea
+              id="job-description"
+              name="description"
+              placeholder={t("createJobDescriptionPlaceholder")}
+              value={job.description}
+              onChange={handleChange}
+              rows={6}
+              required
+              disabled={loading}
+            />
 
-          <label>Description</label>
+            <small className="create-job-hint">
+              {t("createJobDescriptionHint")}
+            </small>
+          </div>
 
-          <textarea
-            name="description"
-            placeholder="Describe the job requirements..."
-            value={job.description}
-            onChange={handleChange}
-            rows="6"
-          />
+          <div className="create-job-field">
+            <label htmlFor="job-location">
+              {t("createJobLocationLabel")}
+              <span aria-hidden="true"> *</span>
+            </label>
 
-          <label>Location</label>
+            <input
+              id="job-location"
+              type="text"
+              name="location"
+              placeholder={t("createJobLocationPlaceholder")}
+              value={job.location}
+              onChange={handleChange}
+              maxLength={150}
+              required
+              disabled={loading}
+            />
+          </div>
 
-          <input
-            type="text"
-            name="location"
-            placeholder="e.g. Chennai"
-            value={job.location}
-            onChange={handleChange}
-          />
+          <div className="create-job-field">
+            <label htmlFor="job-salary">
+              {t("createJobSalaryLabel")}
+              <span aria-hidden="true"> *</span>
+            </label>
 
-          <label>Salary</label>
+            <div className="create-job-salary-input">
+              <span aria-hidden="true">₹</span>
+              <input
+                id="job-salary"
+                type="number"
+                name="salary"
+                placeholder={t("createJobSalaryPlaceholder")}
+                value={job.salary}
+                onChange={handleChange}
+                min="0"
+                step="any"
+                required
+                disabled={loading}
+              />
+            </div>
 
-          <input
-            type="number"
-            name="salary"
-            placeholder="e.g. 25000"
-            value={job.salary}
-            onChange={handleChange}
-            min="0"
-          />
+            <small className="create-job-hint">
+              {t("createJobSalaryHint")}
+            </small>
+          </div>
 
           <div className="create-job-actions">
-
             <button
               type="button"
               className="cancel-btn"
-              onClick={() =>
-                navigate("/company-dashboard")
-              }
+              onClick={() => navigate("/company-dashboard")}
+              disabled={loading}
             >
-              Cancel
+              {t("createJobCancel")}
             </button>
 
             <button
@@ -150,18 +207,22 @@ function CreateJob() {
               className="create-btn"
               disabled={loading}
             >
-              {loading
-                ? "Creating..."
-                : "Create Job"}
+              {loading ? (
+                <>
+                  <span className="create-job-button-spinner" />
+                  {t("createJobCreating")}
+                </>
+              ) : (
+                <>
+                  <span aria-hidden="true">+</span>
+                  {t("createJobSubmit")}
+                </>
+              )}
             </button>
-
           </div>
-
         </form>
-
-      </div>
-
-    </div>
+      </section>
+    </main>
   );
 }
 

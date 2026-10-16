@@ -1,8 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { t } = useLanguage();
 
   const access = localStorage.getItem("access");
   const role = localStorage.getItem("role");
@@ -12,170 +17,117 @@ const Navbar = () => {
     localStorage.removeItem("refresh");
     localStorage.removeItem("role");
 
-    alert("Logged Out Successfully");
+    alert(
+      t("loggedOutSuccessfully") || "Logged Out Successfully"
+    );
 
     navigate("/login");
   };
 
+  const isActive = (path) => {
+    return location.pathname === path ? "active" : "";
+  };
+
+  const renderLink = (path, label, className = "nav-link") => (
+    <Link
+      to={path}
+      className={`${className} ${isActive(path)}`}
+    >
+      {label}
+    </Link>
+  );
+
   return (
     <nav className="navbar">
-
       <div className="navbar-container">
+
+        {/* LOGO */}
 
         <Link to="/" className="navbar-brand">
           <span className="brand-icon">J</span>
-          <span>JobPortal</span>
+          <span className="brand-name">JobPortal</span>
         </Link>
+
+        {/* NAVIGATION */}
 
         <div className="navbar-links">
 
-          {/* Jobs */}
+          {/* HOME AND JOBS */}
 
-          <Link
-            to="/"
-            className="nav-link"
-          >
-            Jobs
-          </Link>
+          {renderLink("/", t("home"))}
+          {renderLink("/jobs", t("jobs"))}
 
-
-          {/* Logged Out */}
+          {/* GUEST */}
 
           {!access && (
             <>
-              <Link
-                to="/login"
-                className="nav-link"
-              >
-                Login
-              </Link>
-
-              <Link
-                to="/register"
-                className="nav-register"
-              >
-                Register
-              </Link>
+              {renderLink("/settings", t("settings"))}
+              {renderLink("/login", t("login"))}
+              {renderLink(
+                "/register",
+                t("register"),
+                "nav-register"
+              )}
             </>
           )}
 
-
-          {/* Student */}
+          {/* STUDENT */}
 
           {access && role === "student" && (
             <>
-              <Link
-                to="/student-dashboard"
-                className="nav-link"
-              >
-                Dashboard
-              </Link>
+              {renderLink(
+                "/student-dashboard",
+                t("dashboard")
+              )}
 
-              <Link
-                to="/profile"
-                className="nav-link"
-              >
-                Profile
-              </Link>
-
-              <Link
-                to="/settings"
-                className="nav-link"
-              >
-                Settings
-              </Link>
-
-              <Link
-                to="/about"
-                className="nav-link"
-              >
-                About
-              </Link>
+              {renderLink("/profile", t("profile"))}
+              {renderLink("/settings", t("settings"))}
             </>
           )}
 
-
-          {/* Company */}
+          {/* COMPANY */}
 
           {access && role === "company" && (
             <>
-              <Link
-                to="/company-dashboard"
-                className="nav-link"
-              >
-                Dashboard
-              </Link>
+              {renderLink(
+                "/company-dashboard",
+                t("dashboard")
+              )}
 
-              <Link
-                to="/create-job"
-                className="nav-link"
-              >
-                Post Job
-              </Link>
-
-              <Link
-                to="/settings"
-                className="nav-link"
-              >
-                Settings
-              </Link>
-
-              <Link
-                to="/about"
-                className="nav-link"
-              >
-                About
-              </Link>
+              {renderLink("/create-job", t("postJob"))}
+              {renderLink("/settings", t("settings"))}
             </>
           )}
 
-
-          {/* Admin */}
+          {/* ADMIN */}
 
           {access && role === "admin" && (
             <>
-              <Link
-                to="/admin-dashboard"
-                className="nav-link"
-              >
-                Admin Dashboard
-              </Link>
+              {renderLink(
+                "/admin-dashboard",
+                t("adminDashboard")
+              )}
 
-              <Link
-                to="/settings"
-                className="nav-link"
-              >
-                Settings
-              </Link>
-
-              <Link
-                to="/about"
-                className="nav-link"
-              >
-                About
-              </Link>
+              {renderLink("/settings", t("settings"))}
             </>
           )}
 
-
-          {/* Logout */}
+          {/* LOGOUT */}
 
           {access && (
             <button
+              type="button"
               className="logout-btn"
               onClick={handleLogout}
             >
-              Logout
+              {t("logout")}
             </button>
           )}
 
         </div>
-
       </div>
-
     </nav>
   );
 };
 
 export default Navbar;
-
