@@ -82,6 +82,16 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "resume",
         ]
 
+    def to_internal_value(self, data):
+       data = data.copy()
+
+    # Empty numeric inputs should be treated as NULL.
+       for field in ("experience_years", "expected_salary"):
+        if data.get(field) == "":
+            data[field] = None
+
+       return super().to_internal_value(data)    
+
     def validate_resume(self, value):
 
         if value is None:

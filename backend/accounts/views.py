@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.exceptions import ValidationError as DRFValidationError
 
 from .models import User, StudentProfile, CompanyProfile
 
@@ -152,6 +153,12 @@ class StudentProfileView(APIView):
 
             serializer = StudentProfileSerializer(profile)
             return Response(serializer.data)
+        
+        except DRFValidationError as exc:
+         return Response(
+        exc.detail,
+        status=status.HTTP_400_BAD_REQUEST,
+    )
 
         except Exception:
             logger.exception(
