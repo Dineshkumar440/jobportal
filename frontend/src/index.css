@@ -1,13 +1,62 @@
 /* =========================================
    GLOBAL JOBPORTAL SETTINGS
 ========================================= */
+/* Default theme: available before Settings is opened */
+:root {
+  color-scheme: light;
 
-html {
-  font-size: 16px;
+  --background: #f8fafc;
+  --white: #ffffff;
 
-  transition:
-    background 0.25s ease,
-    color 0.25s ease;
+  --text-dark: #111827;
+  --text: #4b5563;
+  --text-light: #6b7280;
+
+  --border: #e5e7eb;
+
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --primary-light: #eef2ff;
+
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+
+  --warning: #d97706;
+  --warning-bg: #fef3c7;
+}
+/* =========================================
+   GLOBAL FULL-WIDTH LAYOUT
+========================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 
@@ -15,16 +64,12 @@ html {
    FONT SIZE SYSTEM
 ========================================= */
 
-html[data-font-size="small"] {
-  --font-scale: 0.92;
-}
+/* =========================================
+   GLOBAL FONT SIZE — FIXED AT 115%
+========================================= */
 
-html[data-font-size="medium"] {
-  --font-scale: 1;
-}
-
-html[data-font-size="large"] {
-  --font-scale: 1.10;
+html {
+  --font-scale: 1.15;
 }
 
 
@@ -112,5 +157,88 @@ button,
 input,
 textarea,
 select {
-  font-size: calc(1em * var(--font-scale, 1));
+  font-size: inherit;
+}
+
+
+/* Widen the main homepage content */
+.home-hero-inner {
+  width: calc(100% - 64px) !important;
+  max-width: 1600px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Widen shared page containers */
+.container {
+  width: calc(100% - 64px);
+  max-width: 1600px !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Keep the layout responsive on smaller screens */
+@media (max-width: 640px) {
+  .home-hero-inner,
+  .container {
+    width: calc(100% - 32px) !important;
+  }
+}
+
+/* =========================================
+   FULL WIDTH FOR ALL MAIN PAGES
+========================================= */
+
+main[class*="page"] > [class*="container"],
+main[class*="page"] > [class*="inner"],
+main[class*="page"] > [class*="layout"],
+.navbar-container,
+.footer-container {
+  width: calc(100% - 48px) !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Keep content responsive on mobile */
+@media (max-width: 640px) {
+  main[class*="page"] > [class*="container"],
+  main[class*="page"] > [class*="inner"],
+  main[class*="page"] > [class*="layout"],
+  .navbar-container,
+  .footer-container {
+    width: calc(100% - 24px) !important;
+  }
+}
+
+
+/* =========================================
+   LOGOUT BUTTON — ALWAYS RED
+========================================= */
+
+button[class*="logout"],
+button[class*="Logout"],
+a[class*="logout"],
+a[class*="Logout"] {
+  background: #dc2626 !important;
+  border: 1px solid #dc2626 !important;
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+button[class*="logout"]:hover,
+button[class*="Logout"]:hover,
+a[class*="logout"]:hover,
+a[class*="Logout"]:hover {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+}
+
+button[class*="logout"]:focus-visible,
+button[class*="Logout"]:focus-visible,
+a[class*="logout"]:focus-visible,
+a[class*="Logout"]:focus-visible {
+  outline: 3px solid rgba(220, 38, 38, 0.3);
+  outline-offset: 3px;
 }

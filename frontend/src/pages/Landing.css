@@ -2029,3 +2029,338 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* =========================================
+   LANDING PAGE — COMPLETE DARK THEME FIX
+========================================= */
+
+html[data-theme="dark"] .jobs-page {
+  --landing-primary: #a78bfa;
+  --landing-primary-dark: #8b5cf6;
+  --landing-text: #f1f5f9;
+  --landing-muted: #a7b3c7;
+  --landing-border: #334155;
+  --landing-white: #1e293b;
+  --landing-background: #0b1120;
+
+  color: var(--landing-text);
+  background: var(--landing-background);
+}
+
+/* Hero */
+html[data-theme="dark"] .jobs-page .home-hero {
+  background:
+    radial-gradient(
+      circle at 80% 24%,
+      rgba(139, 92, 246, 0.16),
+      transparent 29%
+    ),
+    radial-gradient(
+      circle at 12% 100%,
+      rgba(59, 130, 246, 0.10),
+      transparent 30%
+    ),
+    linear-gradient(135deg, #0b1120 0%, #111827 52%, #0f172a 100%);
+}
+
+html[data-theme="dark"] .jobs-page .home-badge {
+  background: #1e293b;
+  border-color: #475569;
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .jobs-page .hero-trust > span {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .jobs-page .trust-check {
+  background: #312e81;
+  color: #c4b5fd;
+}
+
+/* Search form */
+html[data-theme="dark"] .jobs-page .home-search {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+html[data-theme="dark"] .jobs-page .home-search input {
+  background: transparent;
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .jobs-page .home-search input::placeholder {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .jobs-page .home-search button,
+html[data-theme="dark"] .jobs-page .state-button,
+html[data-theme="dark"] .jobs-page .about-button {
+  background: #7c5cff;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .jobs-page .home-search button:hover,
+html[data-theme="dark"] .jobs-page .state-button:hover,
+html[data-theme="dark"] .jobs-page .about-button:hover {
+  background: #6d4aff;
+}
+
+/* Hero job preview and floating cards */
+html[data-theme="dark"] .jobs-page .hero-preview-card,
+html[data-theme="dark"] .jobs-page .floating-card {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme="dark"] .jobs-page .hero-preview-card h2,
+html[data-theme="dark"] .jobs-page .preview-footer strong,
+html[data-theme="dark"] .jobs-page .floating-card strong {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .jobs-page .preview-company,
+html[data-theme="dark"] .jobs-page .preview-details > span,
+html[data-theme="dark"] .jobs-page .preview-footer > div > span,
+html[data-theme="dark"] .jobs-page .floating-card > div > span {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .jobs-page .preview-divider {
+  background: #475569;
+}
+
+html[data-theme="dark"] .jobs-page .preview-icon,
+html[data-theme="dark"] .jobs-page .preview-arrow,
+html[data-theme="dark"] .jobs-page .floating-card-icon,
+html[data-theme="dark"] .jobs-page .stat-icon,
+html[data-theme="dark"] .jobs-page .why-icon-purple {
+  background: #312e81;
+  color: #c4b5fd;
+}
+
+/* Statistics */
+html[data-theme="dark"] .jobs-page .home-stats {
+  background: #111827;
+  border-color: #334155;
+  box-shadow: 0 13px 35px rgba(0, 0, 0, 0.18);
+}
+
+html[data-theme="dark"] .jobs-page .home-stat + .home-stat {
+  border-left-color: #334155;
+}
+
+html[data-theme="dark"] .jobs-page .home-stat strong {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .jobs-page .home-stat > div > span {
+  color: #a7b3c7;
+}
+
+/* Section headings */
+html[data-theme="dark"] .jobs-page .section-heading h2,
+html[data-theme="dark"] .jobs-page .about-content h2 {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .jobs-page .section-description,
+html[data-theme="dark"] .jobs-page .about-content > p {
+  color: #a7b3c7;
+}
+
+html[data-theme="dark"] .jobs-page .section-eyebrow {
+  color: #a78bfa;
+}
+
+/* Jobs toolbar and inline search */
+html[data-theme="dark"] .jobs-page .jobs-toolbar {
+  background: #111827;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .jobs-page .jobs-result-count {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .jobs-page .jobs-inline-search {
+  background: #0f172a;
+  border-color: #475569;
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .jobs-page .jobs-inline-search input {
+  background: transparent;
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .jobs-page .jobs-inline-search input::placeholder {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .jobs-page .view-all-button {
+  background: #1e293b;
+  border-color: #51458f;
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .jobs-page .view-all-button:hover {
+  background: #312e81;
+  border-color: #7c5cff;
+}
+
+/* Job cards */
+html[data-theme="dark"] .jobs-page .job-card {
+  background: #111827;
+  border-color: #334155;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="dark"] .jobs-page .job-card:hover {
+  border-color: #7c5cff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme="dark"] .jobs-page .company-placeholder {
+  background: linear-gradient(145deg, #312e81, #1e293b);
+  border-color: #4c478c;
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .jobs-page .job-type {
+  background: #1e293b;
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .jobs-page .job-card h3 {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .jobs-page .job-location,
+html[data-theme="dark"] .jobs-page .job-description,
+html[data-theme="dark"] .jobs-page .salary-label,
+html[data-theme="dark"] .jobs-page .jobs-bottom-note {
+  color: #a7b3c7;
+}
+
+html[data-theme="dark"] .jobs-page .job-card-meta strong {
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .jobs-page .job-details-button {
+  background: #1e293b;
+  border-color: #51458f;
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .jobs-page .job-details-button:hover:not(:disabled) {
+  background: #7c5cff;
+  border-color: #7c5cff;
+  color: #ffffff;
+}
+
+/* Loading, empty and error panels */
+html[data-theme="dark"] .jobs-page .jobs-state {
+  background: #111827;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .jobs-page .jobs-state h3 {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .jobs-page .jobs-state p {
+  color: #a7b3c7;
+}
+
+html[data-theme="dark"] .jobs-page .state-icon {
+  background: #312e81;
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .jobs-page .jobs-error .state-icon {
+  background: #450a0a;
+  color: #fca5a5;
+}
+
+/* Why JobPortal */
+html[data-theme="dark"] .jobs-page .why-section {
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(124, 92, 255, 0.10),
+      transparent 48%
+    ),
+    #0f172a;
+}
+
+html[data-theme="dark"] .jobs-page .why-card {
+  background: #111827;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .jobs-page .why-card:hover {
+  border-color: #7c5cff;
+  box-shadow: 0 13px 30px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .jobs-page .why-card h3 {
+  color: #f1f5f9;
+}
+
+html[data-theme="dark"] .jobs-page .why-card p {
+  color: #a7b3c7;
+}
+
+html[data-theme="dark"] .jobs-page .why-icon-blue {
+  background: #172554;
+  color: #93c5fd;
+}
+
+html[data-theme="dark"] .jobs-page .why-icon-green {
+  background: #052e24;
+  color: #86efac;
+}
+
+/* About JobPortal */
+html[data-theme="dark"] .jobs-page .home-about {
+  background: #0b1120;
+}
+
+html[data-theme="dark"] .jobs-page .about-points > div {
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] .jobs-page .about-points > div > span {
+  background: #14532d;
+  color: #86efac;
+}
+
+/* Career workspace dashboard already has a dark design;
+   keep its existing contrast and styling. */
+
+/* CTA */
+html[data-theme="dark"] .jobs-page .home-cta {
+  background: linear-gradient(
+    120deg,
+    #17132f 0%,
+    #272054 58%,
+    #382b75 100%
+  );
+  border-color: #494079;
+}
+
+html[data-theme="dark"] .jobs-page .cta-button {
+  background: #c4b5fd;
+  color: #1e1b4b;
+  border-color: #a78bfa;
+}
+
+html[data-theme="dark"] .jobs-page .cta-button:hover {
+  background: #ddd6fe;
+  color: #1e1b4b;
+}

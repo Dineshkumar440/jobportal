@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
@@ -15,10 +16,28 @@ const Register = () => {
     role: "student",
   });
 
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const password = formData.password;
+
+  // Strong password requirements
+  const passwordRules = {
+    minLength: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[^A-Za-z0-9]/.test(password),
+  };
+
+  const isStrongPassword = Object.values(passwordRules).every(Boolean);
+
+  const passwordsMatch =
+    confirmPassword.length > 0 && password === confirmPassword;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +51,12 @@ const Register = () => {
     setSuccessMessage("");
   };
 
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    setErrorMessage("");
+    setSuccessMessage("");
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -41,9 +66,22 @@ const Register = () => {
     if (
       !formData.username.trim() ||
       !formData.email.trim() ||
-      !formData.password
+      !formData.password ||
+      !confirmPassword
     ) {
       setErrorMessage("Please fill in all fields.");
+      return;
+    }
+
+    if (!isStrongPassword) {
+      setErrorMessage(
+        "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character."
+      );
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
       return;
     }
 
@@ -51,9 +89,10 @@ const Register = () => {
       setLoading(true);
 
       await api.post("accounts/register/", {
-        ...formData,
         username: formData.username.trim(),
         email: formData.email.trim(),
+        password: formData.password,
+        role: formData.role,
       });
 
       setSuccessMessage(
@@ -92,6 +131,51 @@ const Register = () => {
     }
   };
 
+  const passwordToggleIcon = (visible) =>
+    visible ? (
+      <svg
+        viewBox="0 0 24 24"
+        width="21"
+        height="21"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M3 3l18 18" />
+        <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+        <path d="M9.9 5.2A11.5 11.5 0 0 1 12 5c5 0 8.5 4.5 9.5 7a12 12 0 0 1-3 4.2" />
+        <path d="M6.2 6.2A13 13 0 0 0 2.5 12c1 2.5 4.5 7 9.5 7 1.2 0 2.3-.3 3.3-.7" />
+      </svg>
+    ) : (
+      <svg
+        viewBox="0 0 24 24"
+        width="21"
+        height="21"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    );
+
+  const renderPasswordRule = (passed, text) => (
+    <li
+      key={text}
+      className={`password-rule ${passed ? "passed" : "pending"}`}
+    >
+      <span aria-hidden="true">{passed ? "✓" : "○"}</span>
+      {text}
+    </li>
+  );
+
   return (
     <main className="register-page">
       <div className="register-layout">
@@ -109,12 +193,12 @@ const Register = () => {
             </span>
 
             <h1>
-               {t("registerWelcomeTitle")}
-          <span>{t("registerWelcomeHighlight")}</span>
+              {t("registerWelcomeTitle")}
+              <span>{t("registerWelcomeHighlight")}</span>
             </h1>
 
             <p className="register-welcome-description">
-             {t("registerWelcomeDescription")}
+              {t("registerWelcomeDescription")}
             </p>
 
             <div className="register-benefits">
@@ -137,7 +221,7 @@ const Register = () => {
 
                 <div>
                   <h3>{t("registerBenefitOneTitle")}</h3>
-              <p>{t("registerBenefitOneDescription")}</p>
+                  <p>{t("registerBenefitOneDescription")}</p>
                 </div>
               </div>
 
@@ -160,7 +244,7 @@ const Register = () => {
 
                 <div>
                   <h3>{t("registerBenefitTwoTitle")}</h3>
-              <p>{t("registerBenefitTwoDescription")}</p>
+                  <p>{t("registerBenefitTwoDescription")}</p>
                 </div>
               </div>
 
@@ -182,8 +266,8 @@ const Register = () => {
                 </span>
 
                 <div>
-                   <h3>{t("registerBenefitThreeTitle")}</h3>
-              <p>{t("registerBenefitThreeDescription")}</p>
+                  <h3>{t("registerBenefitThreeTitle")}</h3>
+                  <p>{t("registerBenefitThreeDescription")}</p>
                 </div>
               </div>
             </div>
@@ -213,7 +297,7 @@ const Register = () => {
 
               <h2>{t("welcomeBack")}</h2>
 
-          <p>{t("registerSubtitle")}</p>
+              <p>{t("registerSubtitle")}</p>
             </header>
 
             {errorMessage && (
@@ -244,40 +328,40 @@ const Register = () => {
               {/* Username */}
               <div className="register-field">
                 <label htmlFor="register-username">
-  {t("username")}
-</label>
+                  {t("username")}
+                </label>
 
-<input
-  id="register-username"
-  type="text"
-  name="username"
-  placeholder={t("chooseUsername")}
-  value={formData.username}
-  onChange={handleChange}
-  autoComplete="username"
-  maxLength={150}
-  required
-  disabled={loading}
-/>
+                <input
+                  id="register-username"
+                  type="text"
+                  name="username"
+                  placeholder={t("chooseUsername")}
+                  value={formData.username}
+                  onChange={handleChange}
+                  autoComplete="username"
+                  maxLength={150}
+                  required
+                  disabled={loading}
+                />
               </div>
 
               {/* Email */}
               <div className="register-field">
                 <label htmlFor="register-email">
-  {t("emailAddress")}
-</label>
+                  {t("emailAddress")}
+                </label>
 
-<input
-  id="register-email"
-  type="email"
-  name="email"
-  placeholder={t("enterEmail")}
-  value={formData.email}
-  onChange={handleChange}
-  autoComplete="email"
-  required
-  disabled={loading}
-/>
+                <input
+                  id="register-email"
+                  type="email"
+                  name="email"
+                  placeholder={t("enterEmail")}
+                  value={formData.email}
+                  onChange={handleChange}
+                  autoComplete="email"
+                  required
+                  disabled={loading}
+                />
               </div>
 
               {/* Password */}
@@ -297,6 +381,7 @@ const Register = () => {
                     autoComplete="new-password"
                     required
                     disabled={loading}
+                    aria-describedby="password-requirements"
                   />
 
                   <button
@@ -311,45 +396,97 @@ const Register = () => {
                     aria-pressed={showPassword}
                     disabled={loading}
                   >
-                    {showPassword ? (
-                      <svg
-                        viewBox="0 0 24 24"
-                        width="21"
-                        height="21"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M3 3l18 18" />
-                        <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
-                        <path d="M9.9 5.2A11.5 11.5 0 0 1 12 5c5 0 8.5 4.5 9.5 7a12 12 0 0 1-3 4.2" />
-                        <path d="M6.2 6.2A13 13 0 0 0 2.5 12c1 2.5 4.5 7 9.5 7 1.2 0 2.3-.3 3.3-.7" />
-                      </svg>
-                    ) : (
-                      <svg
-                        viewBox="0 0 24 24"
-                        width="21"
-                        height="21"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                    )}
+                    {passwordToggleIcon(showPassword)}
                   </button>
                 </div>
 
                 <p className="register-field-hint">
-                  {t("passwordHint")}
+                  Use a strong password that meets all the requirements.
                 </p>
+
+                <ul
+                  id="password-requirements"
+                  className="password-rules"
+                  aria-live="polite"
+                >
+                  {renderPasswordRule(
+                    passwordRules.minLength,
+                    "At least 8 characters"
+                  )}
+                  {renderPasswordRule(
+                    passwordRules.uppercase,
+                    "At least one capital letter (A–Z)"
+                  )}
+                  {renderPasswordRule(
+                    passwordRules.lowercase,
+                    "At least one lowercase letter (a–z)"
+                  )}
+                  {renderPasswordRule(
+                    passwordRules.number,
+                    "At least one number (0–9)"
+                  )}
+                  {renderPasswordRule(
+                    passwordRules.special,
+                    "At least one special character (@, #, !, etc.)"
+                  )}
+                </ul>
+              </div>
+
+              {/* Confirm Password */}
+              <div className="register-field">
+                <label htmlFor="register-confirm-password">
+                  Confirm Password
+                </label>
+
+                <div className="register-password-wrapper">
+                  <input
+                    id="register-confirm-password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    placeholder="Re-enter your password"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                    autoComplete="new-password"
+                    required
+                    disabled={loading}
+                    aria-invalid={
+                      confirmPassword.length > 0 &&
+                      password !== confirmPassword
+                    }
+                  />
+
+                  <button
+                    type="button"
+                    className="register-password-toggle"
+                    onClick={() =>
+                      setShowConfirmPassword((previous) => !previous)
+                    }
+                    aria-label={
+                      showConfirmPassword
+                        ? "Hide confirm password"
+                        : "Show confirm password"
+                    }
+                    aria-pressed={showConfirmPassword}
+                    disabled={loading}
+                  >
+                    {passwordToggleIcon(showConfirmPassword)}
+                  </button>
+                </div>
+
+                {confirmPassword.length > 0 && (
+                  <p
+                    className={`register-field-hint ${
+                      passwordsMatch
+                        ? "password-match"
+                        : "password-mismatch"
+                    }`}
+                    role="status"
+                  >
+                    {passwordsMatch
+                      ? "✓ Passwords match."
+                      : "Passwords do not match."}
+                  </p>
+                )}
               </div>
 
               {/* Account Type */}
@@ -370,6 +507,7 @@ const Register = () => {
                     <option value="student">
                       {t("studentJobSeeker")}
                     </option>
+
                     <option value="company">
                       {t("companyEmployer")}
                     </option>
@@ -391,6 +529,7 @@ const Register = () => {
                 </div>
               </div>
 
+              {/* Submit */}
               <button
                 type="submit"
                 className="register-submit"

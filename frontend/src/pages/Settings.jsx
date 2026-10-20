@@ -19,10 +19,6 @@ const Settings = () => {
     () => localStorage.getItem("theme") || "light"
   );
 
-  const [fontSize, setFontSize] = useState(
-    () => localStorage.getItem("fontSize") || "medium"
-  );
-
   const [notifications, setNotifications] = useState(
     () => localStorage.getItem("notifications") !== "false"
   );
@@ -30,6 +26,22 @@ const Settings = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  /* ================= FIXED FONT SIZE ================= */
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    // Keep the entire application on a fixed 115% font scale.
+    root.setAttribute("data-font-size", "large");
+    root.style.setProperty("--font-scale", "1.15");
+
+    // Remove the old zoom behaviour from previous settings.
+    root.style.removeProperty("zoom");
+
+    // Remove the old user-selected font preference.
+    localStorage.removeItem("fontSize");
+  }, []);
 
   /* ================= THEME ================= */
 
@@ -67,31 +79,6 @@ const Settings = () => {
     };
   }, [theme]);
 
-  /* ================= FONT SIZE ================= */
-
-  useEffect(() => {
-    const validSizes = ["small", "medium", "large"];
-    const selectedSize = validSizes.includes(fontSize)
-      ? fontSize
-      : "medium";
-
-    document.documentElement.setAttribute(
-      "data-font-size",
-      selectedSize
-    );
-
-    localStorage.setItem("fontSize", selectedSize);
-
-    // Existing zoom behaviour retained.
-    const scaleMap = {
-      small: "0.9",
-      medium: "1",
-      large: "1.15",
-    };
-
-    document.documentElement.style.zoom = scaleMap[selectedSize];
-  }, [fontSize]);
-
   /* ================= NOTIFICATIONS ================= */
 
   const handleNotificationChange = (value) => {
@@ -103,14 +90,18 @@ const Settings = () => {
 
   const resetPreferences = () => {
     setTheme("light");
-    setFontSize("medium");
     setLanguage("english");
     setNotifications(true);
 
     localStorage.setItem("theme", "light");
-    localStorage.setItem("fontSize", "medium");
     localStorage.setItem("language", "english");
     localStorage.setItem("notifications", "true");
+
+    // Font size is fixed and is not a user preference.
+    document.documentElement.setAttribute("data-font-size", "large");
+    document.documentElement.style.setProperty("--font-scale", "1.15");
+    document.documentElement.style.removeProperty("zoom");
+    localStorage.removeItem("fontSize");
   };
 
   /* ================= LOGOUT ================= */
@@ -233,6 +224,7 @@ const Settings = () => {
 
                 <div className="preference-group">
                   <h3>{t("theme")}</h3>
+
                   <p className="preference-description">
                     {t("chooseTheme")}
                   </p>
@@ -251,12 +243,6 @@ const Settings = () => {
                         label: t("dark"),
                         description: t("darkDescription"),
                       },
-                      {
-                        value: "system",
-                        icon: "🖥️",
-                        label: t("system"),
-                        description: t("systemDescription"),
-                      },
                     ].map((option) => (
                       <button
                         key={option.value}
@@ -269,54 +255,10 @@ const Settings = () => {
                         <span className="theme-icon">
                           {option.icon}
                         </span>
+
                         <strong>{option.label}</strong>
+
                         <small>{option.description}</small>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="preference-group">
-                  <h3>{t("fontSize")}</h3>
-
-                  <p className="preference-description">
-                    {t("changeFontSize")}
-                  </p>
-
-                  <div className="font-options">
-                    {[
-                      {
-                        value: "small",
-                        label: t("small"),
-                        description: "90%",
-                      },
-                      {
-                        value: "medium",
-                        label: t("medium"),
-                        description: t("defaultSize"),
-                      },
-                      {
-                        value: "large",
-                        label: t("large"),
-                        description: "115%",
-                      },
-                    ].map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        className={`font-option ${
-                          fontSize === option.value ? "selected" : ""
-                        }`}
-                        onClick={() => setFontSize(option.value)}
-                      >
-                        <span className={`font-preview ${option.value}`}>
-                          A
-                        </span>
-
-                        <div>
-                          <strong>{option.label}</strong>
-                          <small>{option.description}</small>
-                        </div>
                       </button>
                     ))}
                   </div>
@@ -404,6 +346,7 @@ const Settings = () => {
                         handleNotificationChange(event.target.checked)
                       }
                     />
+
                     <span className="slider"></span>
                   </label>
                 </div>
@@ -552,6 +495,7 @@ const Settings = () => {
                 )}
               </section>
             )}
+
           </main>
         </div>
       </div>

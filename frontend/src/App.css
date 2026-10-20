@@ -1,4 +1,18 @@
+
+
 .app-page {
   width: 100%;
+  max-width: none;
+  min-width: 0;
   min-height: calc(100vh - 72px);
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding-left: 24px;
+  padding-right: 24px;
 }

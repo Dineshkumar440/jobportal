@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import "./App.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { LanguageProvider } from "./context/LanguageContext";
@@ -22,10 +23,40 @@ import Forgot from "./pages/Forgot";
 import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
+  useEffect(() => {
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem("theme") || "light";
+
+  const applyTheme = (theme) => {
+    const actualTheme =
+      theme === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : theme;
+
+    root.setAttribute("data-theme", actualTheme);
+  };
+
+  applyTheme(savedTheme);
+
+  if (savedTheme !== "system") return;
+
+  const mediaQuery = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  );
+
+  const handleChange = () => applyTheme("system");
+
+  mediaQuery.addEventListener("change", handleChange);
+
+  return () => {
+    mediaQuery.removeEventListener("change", handleChange);
+  };
+}, []);
   return (
   <LanguageProvider>
     <BrowserRouter>
-
       <Navbar />
 
       <Routes>
@@ -141,7 +172,7 @@ const App = () => {
 
       </Routes>
 
-      <Footer />
+      <Footer/>
 
     </BrowserRouter>
   </LanguageProvider>

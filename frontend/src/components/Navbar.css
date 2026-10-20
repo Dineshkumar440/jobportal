@@ -409,3 +409,52 @@
     font-size: 12px;
   }
 }
+
+
+/* =========================================
+   NAVBAR — DARK THEME
+========================================= */
+
+html[data-theme="dark"] nav.navbar {
+  background: #0b1120 !important;
+  color: #f1f5f9 !important;
+  border-bottom: 1px solid #334155;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo and normal navigation links */
+html[data-theme="dark"] nav.navbar a {
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] nav.navbar a:hover {
+  color: #c4b5fd;
+}
+
+/* Active navigation item */
+html[data-theme="dark"] nav.navbar a.active,
+html[data-theme="dark"] nav.navbar a[aria-current="page"] {
+  color: #c4b5fd;
+  background: #252044;
+}
+
+/* Navigation buttons */
+html[data-theme="dark"] nav.navbar button {
+  color: #e2e8f0;
+}
+
+/* Keep primary/register buttons clearly visible */
+html[data-theme="dark"] nav.navbar .nav-register,
+html[data-theme="dark"] nav.navbar .register-button {
+  background: #7c5cff;
+  color: #ffffff;
+  border-color: #7c5cff;
+}
+
+/* Mobile navigation */
+html[data-theme="dark"] nav.navbar .nav-menu,
+html[data-theme="dark"] nav.navbar .navbar-menu {
+  background: #0b1120;
+  color: #f1f5f9;
+  border-color: #334155;
+}

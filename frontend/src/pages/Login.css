@@ -700,3 +700,17 @@ box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+/* Fix saved username/password text visibility in Chrome */
+#login-username:-webkit-autofill,
+#login-username:-webkit-autofill:hover,
+#login-username:-webkit-autofill:focus,
+#login-password:-webkit-autofill,
+#login-password:-webkit-autofill:hover,
+#login-password:-webkit-autofill:focus {
+  -webkit-text-fill-color: #111827 !important;
+  caret-color: #111827 !important;
+
+  -webkit-box-shadow: 0 0 0 1000px #e8f0fe inset !important;
+  box-shadow: 0 0 0 1000px #e8f0fe inset !important;
+}
